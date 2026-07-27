@@ -121,6 +121,19 @@ class TestContextClassifier(unittest.TestCase):
         cand3 = Entity(type="CHEQUE_NUMBER", text="123456", start=16, end=22)
         self.assertEqual(self.classifier.classify_entity(cand3, text3).type, "MPIN")
 
+    def test_isolated_6digit_number(self):
+        text = "Chennai-600113 India"
+        candidate = Entity(
+            type="CHEQUE_NUMBER",
+            text="600113",
+            start=8,
+            end=14,
+            confidence=1.0,
+        )
+        res = self.classifier.classify_entity(candidate, text)
+        self.assertEqual(res.type, "PINCODE")
+        self.assertEqual(res.confidence, 0.50)
+
 
 if __name__ == "__main__":
     unittest.main()

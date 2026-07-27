@@ -203,6 +203,8 @@ class FinTechPrivacyPipeline:
             classified_entities = self.context_classifier.classify_all(
                 all_candidate_entities, normalized_text
             )
+            # Filter out PINCODE entities to prevent them from being masked
+            classified_entities = [e for e in classified_entities if e.type != "PINCODE"]
         else:
             classified_entities = all_candidate_entities
 

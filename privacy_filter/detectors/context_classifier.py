@@ -302,6 +302,16 @@ class ContextClassifier:
                     confidence=0.95,
                     category="CONTEXT_DISAMBIGUATED",
                 )
+            else:
+                # Isolated 6-digit number without any contextual indicators (like a pincode)
+                return Entity(
+                    type="PINCODE",
+                    text=entity.text,
+                    start=entity.start,
+                    end=entity.end,
+                    confidence=0.50,
+                    category="ISOLATED_NUMERIC",
+                )
 
         return entity
 
