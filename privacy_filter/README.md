@@ -31,24 +31,21 @@ This toolkit ensures compliance with data privacy regulations (such as GDPR, CCP
 
 The privacy filter employs a modular 10-step hybrid detection pipeline:
 
-```mermaid
-graph TD
-    Input[Raw Input Document] --> Step1[1. Language Detection]
-    Step1 --> Step2[2. Indic Numeral Normalization]
-    Step2 --> Detectors[Parallel Detector Ensemble]
-    
-    subgraph Detectors [Parallel Detectors]
-        Regex[3. Optimized Regex Engine]
-        Presidio[4. Microsoft Presidio NLP]
-        spaCy[5. spaCy NER Engine]
-        Keywords[6. Multilingual Keyword Matcher]
-    end
-    
-    Detectors --> Step7[7. Context Classification & Disambiguation]
-    Step7 --> Step8[8. Entity Merging & Overlap Resolution]
-    Step8 --> Step9[9. Span-Preserving Masking]
-    Step9 --> Output[10. Metrics & Sanitized Output]
-```
+Input
+  ↓
+Language Detection
+  ↓
+Indic Numeral Normalization
+  ↓
+Regex + Presidio + spaCy + Keywords
+  ↓
+Context Classification
+  ↓
+Entity Merge
+  ↓
+Masking
+  ↓
+Sanitized Output
 
 ### Pipeline Flow Explanation
 - **Language Detection & Normalization**: The pipeline detects the input language and normalizes non-ASCII digit representations across 12+ Indian scripts into ASCII digits `0-9` to ensure uniform pattern matching.
@@ -115,7 +112,7 @@ The pipeline classifies and masks **28 sensitive entity types** grouped into fiv
 
 ## ⚡ Performance Characteristics
 
-- **100% Offline Execution**: All text processing, neural network inferences, and regex matches are performed locally. No document data is sent to external APIs during sanitization.
+- **Full Offline Processing**: All text processing, neural network inferences, and regex matches are performed locally. No document data is sent to external APIs during sanitization.
 - **Span-Preserving Masking**: Replaces PII starting from the end of the text backwards. This ensures character indexes and offsets do not shift, preserving data alignment.
 - **Strictly Modular Layout**: Add, remove, or customize regex patterns, models, and tag formats without modifying the core pipeline structure.
 - **Unicode-Safe Matching**: Regex patterns use Unicode classes rather than ASCII bounds, allowing proper matching of Indian scripts.
