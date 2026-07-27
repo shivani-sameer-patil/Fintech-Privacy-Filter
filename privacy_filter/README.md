@@ -123,6 +123,5 @@ python privacy_filter/tests/run_tests.py
 
 ## 🔮 Extensibility & Future Extensions
 The pipeline architecture is strictly modular to support future extensions without breaking changes:
-- **Native Binary PDF & DOCX Parsing**: Integrate backend binary parsers (like `pypdf` and `python-docx`) into `server.py` to extract text from raw binary uploads (currently text documents and preloaded layout templates are supported).
 - **OCR Support**: Connect Tesseract / EasyOCR into `pipeline.py` step 1 for image-based scanned KYC forms.
 - **Custom LLM Masking**: Inject an LLM-backed validator into `context_classifier.py` for advanced zero-shot domain disambiguation.
