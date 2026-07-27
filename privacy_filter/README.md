@@ -145,7 +145,8 @@ privacy_filter/
 │   ├── context_classifier.py  # Module 7: Context-aware disambiguator
 │   ├── merger.py              # Module 8: Entity merger & overlap resolver
 │   ├── masker.py              # Module 9: Text masker
-│   └── pipeline.py            # Module 10: Master 10-step pipeline
+│   ├── pipeline.py            # Module 10: Master 10-step pipeline
+│   └── multilingual_keyword_detector.py # Optional: Keyword-based proximity classifier
 │
 ├── tests/                     # Unit & integration test suite
 │   ├── run_tests.py
@@ -158,7 +159,8 @@ privacy_filter/
 │   ├── test_context_classifier.py
 │   ├── test_merger.py
 │   ├── test_masker.py
-│   └── test_pipeline.py
+│   ├── test_pipeline.py
+│   └── test_multilingual_keyword_detector.py # Keyword detector test suite
 │
 ├── samples/                   # Standalone module demonstration scripts
 │   ├── demo_module1.py
@@ -170,7 +172,8 @@ privacy_filter/
 │   ├── demo_module7.py
 │   ├── demo_module8.py
 │   ├── demo_module9.py
-│   └── demo_module10.py
+│   ├── demo_module10.py
+│   └── verify_all_indian_languages.py # Script verifying language models
 │
 └── README.md                  # Complete documentation
 ```
@@ -231,8 +234,8 @@ python privacy_filter/tests/run_tests.py
 The pipeline architecture is strictly modular to facilitate future expansion:
 - **FastAPI Migration**: Upgrade the lightweight local `http.server` to a full FastAPI REST API with automatic Swagger documentation.
 - **Dockerization**: Containerize the app using Docker to allow seamless on-premise microservice orchestration.
-- **Native PDF & DOCX Binary Extraction**: Integrate PDF/Word binary text extractors (like `pymupdf` or `python-docx`) natively into the upload logic.
 - **OCR Integration**: Embed Tesseract or EasyOCR to extract and sanitize scanned KYC images and forms.
+- **Custom LLM Masking**: Inject an LLM-backed validator into `context_classifier.py` for advanced zero-shot domain disambiguation.
 - **Cloud Deployment**: Add templates for deploying as a serverless API (e.g., AWS Lambda, Google Cloud Run) for horizontal scaling.
 - **Streaming Pipeline**: Build a real-time streaming parser using WebSockets or Server-Sent Events (SSE) for sanitizing live chat and agent-customer dialogues.
 
