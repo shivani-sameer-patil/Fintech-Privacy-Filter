@@ -6,11 +6,12 @@ An intelligent preprocessing pipeline designed to detect and mask Personally Ide
 
 ## 🌟 Key Features
 - **28 FinTech & PII Entity Types**: PAN, Aadhaar, Passport, Voter ID, Driving License, Email, Phone, Card (Visa/MC/Amex/RuPay), Bank Account, IFSC, MICR, SWIFT, CVV, UPI, GSTIN, CIN, Loan Account, Policy Number, Cheque Number, Crypto Wallet, IP Address, MAC Address, Device ID, Username, Password, OTP, MPIN, Transaction PIN, Person, Organization, Location, Date.
-- **Multilingual Support**: Supports English and all **22 Official Scheduled Indian Languages** (Hindi, Kannada, Tamil, Telugu, Malayalam, Gujarati, Marathi, Bengali, Odia, Punjabi, Assamese, Urdu, Konkani, Sindhi, Kashmiri, Dogri, Bodo, Santali, Maithili, Manipuri, Nepali).
+- **Multilingual Support**: Supports English and all **12 Official Scheduled Indian Languages** (Hindi, Kannada, Tamil, Telugu, Malayalam, Gujarati, Marathi, Bengali, Odia, Punjabi, Assamese, Urdu).
 - **Indic Numeral Normalization**: Converts non-ASCII digits across 12+ Indian scripts into ASCII numbers without modifying non-digit text.
 - **Multi-Detector Ensemble**: Combines rule-based non-backtracking Regex, Microsoft Presidio, spaCy NER, and multilingual Context Classification.
 - **Intelligent Context Disambiguation**: Distinguishes identical numeric patterns (e.g. 12-digit strings) as `AADHAAR`, `BANK_ACCOUNT`, or `LOAN_ACCOUNT` using surrounding multilingual trigger keywords.
 - **Span-Preserving Masking**: Replaces sensitive entities from the end of document backwards to guarantee zero character index shifting.
+- **Production Web Studio (GUI)**: Built-in local web interface for uploading text files, selecting document templates, sanitizing, and reviewing visual tag highlights and audit reports.
 
 ---
 
@@ -22,6 +23,12 @@ privacy_filter/
 ├── app.py                     # Command-line & application entrypoint
 ├── config.py                  # Pipeline configuration parameters
 ├── requirements.txt           # Python dependencies
+│
+├── web/                       # Web Studio assets & local web server
+│   ├── index.html             # Web Studio layout
+│   ├── style.css              # Dark-theme styles
+│   ├── script.js              # Interactive UI engine
+│   └── server.py              # Lightweight HTTP handler & REST API
 │
 ├── detectors/
 │   ├── regex_patterns.py      # Module 1: Optimized regex registry
@@ -95,12 +102,19 @@ print("Language Detected:", output.language.language_name)
 print("Entities Masked:", output.entities_masked_count)
 ```
 
-### 3. Command Line Execution
+### 3. Launching Web Studio (GUI)
+Run the lightweight web application server locally:
+```bash
+python privacy_filter/web/server.py
+```
+Open `http://localhost:8050` in Chrome/browser to interact with the responsive visual workspace. The Web Studio supports typing text, selecting pre-loaded multilingual document templates, uploading text-based logs and documents directly (e.g. `.txt`, `.json`, `.csv`, `.log`), and exporting sanitized outputs or JSON audit reports.
+
+### 4. Command Line Execution
 ```bash
 python privacy_filter/app.py --text "Contact Shivani Patil at shivani@gmail.com with PAN ABCDE1234F"
 ```
 
-### 4. Running Unit Tests
+### 5. Running Unit Tests
 ```bash
 python privacy_filter/tests/run_tests.py
 ```
@@ -109,6 +123,6 @@ python privacy_filter/tests/run_tests.py
 
 ## 🔮 Extensibility & Future Extensions
 The pipeline architecture is strictly modular to support future extensions without breaking changes:
-- **PDF & DOCX Support**: Prepend document extraction parsers (`pypdf`, `python-docx`) into `pipeline.py` step 1.
+- **Native Binary PDF & DOCX Parsing**: Integrate backend binary parsers (like `pypdf` and `python-docx`) into `server.py` to extract text from raw binary uploads (currently text documents and preloaded layout templates are supported).
 - **OCR Support**: Connect Tesseract / EasyOCR into `pipeline.py` step 1 for image-based scanned KYC forms.
 - **Custom LLM Masking**: Inject an LLM-backed validator into `context_classifier.py` for advanced zero-shot domain disambiguation.
