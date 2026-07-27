@@ -179,13 +179,13 @@ class FinTechPrivacyPipeline:
 
         presidio_entities: List[Entity] = (
             self.presidio_detector.detect(normalized_text, language=language_res.language_code)
-            if self.presidio_detector and self.presidio_detector.is_available
+            if self.presidio_detector and self.presidio_detector.is_available and language_res.language_code == "en"
             else []
         )
 
         spacy_entities: List[Entity] = (
             self.spacy_detector.detect(normalized_text)
-            if self.spacy_detector and self.spacy_detector.is_available
+            if self.spacy_detector and self.spacy_detector.is_available and language_res.language_code == "en"
             else []
         )
 
