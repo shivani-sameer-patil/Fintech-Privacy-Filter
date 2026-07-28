@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const metricLatency = document.getElementById("metric-latency");
   const metricLang = document.getElementById("metric-lang");
   const metricCount = document.getElementById("metric-count");
+  const metricAccuracy = document.getElementById("metric-accuracy");
   const auditTableBody = document.getElementById("audit-table-body");
 
   // Multilingual Document Templates Matrix (Language x Document Type)
@@ -787,7 +788,8 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
     metricLatency.textContent = "0.00 ms";
     metricLang.textContent = "N/A";
     metricCount.textContent = "0";
-    auditTableBody.innerHTML = `<tr><td colspan="5" class="empty-msg">No entities processed yet.</td></tr>`;
+    if (metricAccuracy) metricAccuracy.textContent = "100%";
+    auditTableBody.innerHTML = `<tr><td colspan="6" class="empty-msg">No entities processed yet.</td></tr>`;
   });
 
   btnProcess.addEventListener("click", () => {
@@ -861,13 +863,31 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
 
     maskedOutput.innerHTML = formattedText;
 
+    function updateAccuracy() {
+      if (!metricAccuracy) return;
+      const checkboxes = document.querySelectorAll(".correct-checkbox");
+      if (checkboxes.length === 0) {
+        metricAccuracy.textContent = "100%";
+        return;
+      }
+      let correctCount = 0;
+      checkboxes.forEach(cb => {
+        if (cb.checked) {
+          correctCount++;
+        }
+      });
+      const pct = (correctCount / checkboxes.length) * 100;
+      metricAccuracy.textContent = `${pct.toFixed(1)}%`;
+    }
+
     if (!data.detected_entities || data.detected_entities.length === 0) {
-      auditTableBody.innerHTML = `<tr><td colspan="5" class="empty-msg">No sensitive entities detected in input text.</td></tr>`;
+      auditTableBody.innerHTML = `<tr><td colspan="6" class="empty-msg">No sensitive entities detected in input text.</td></tr>`;
+      if (metricAccuracy) metricAccuracy.textContent = "100%";
       return;
     }
 
     let rowsHtml = "";
-    data.detected_entities.forEach(ent => {
+    data.detected_entities.forEach((ent, index) => {
       rowsHtml += `
         <tr>
           <td><strong style="color: #a5b4fc;">${escapeHtml(ent.type)}</strong></td>
@@ -875,11 +895,20 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
           <td>[${ent.start}, ${ent.end}]</td>
           <td><span class="conf-pill">${(ent.confidence * 100).toFixed(0)}%</span></td>
           <td>${escapeHtml(ent.category || "ENSEMBLE_DETECTOR")}</td>
+          <td style="text-align: center;">
+            <input type="checkbox" class="correct-checkbox" checked data-index="${index}" style="cursor: pointer; width: 18px; height: 18px;">
+          </td>
         </tr>
       `;
     });
 
     auditTableBody.innerHTML = rowsHtml;
+
+    document.querySelectorAll(".correct-checkbox").forEach(cb => {
+      cb.addEventListener("change", updateAccuracy);
+    });
+
+    updateAccuracy();
     window.lastPipelineData = data;
   }
 

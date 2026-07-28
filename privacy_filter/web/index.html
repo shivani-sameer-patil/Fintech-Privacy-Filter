@@ -140,12 +140,12 @@
       </div>
 
       <div class="metric-card glass-panel">
-        <div class="metric-icon amber">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div class="metric-icon emerald">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 11 11 13 15 9"/></svg>
         </div>
         <div class="metric-body">
-          <span class="metric-title">Privacy Risk Status</span>
-          <span id="metric-risk" class="metric-value safe">SECURE (0 PII LEAKS)</span>
+          <span class="metric-title">Sanitization Accuracy</span>
+          <span id="metric-accuracy" class="metric-value">100%</span>
         </div>
       </div>
     </div>
@@ -201,11 +201,12 @@
               <th>Character Span</th>
               <th>Confidence Score</th>
               <th>Detection Source</th>
+              <th style="text-align: center;">Correct?</th>
             </tr>
           </thead>
           <tbody id="audit-table-body">
             <tr>
-              <td colspan="5" class="empty-msg">No entities processed yet. Click 'Sanitize Document' to analyze.</td>
+              <td colspan="6" class="empty-msg">No entities processed yet. Click 'Sanitize Document' to analyze.</td>
             </tr>
           </tbody>
         </table>
