@@ -36,6 +36,7 @@ TYPE_PRIORITY = {
     "OTP": 80,
     "MPIN": 80,
     "TRANSACTION_PIN": 80,
+    "USERNAME": 80,
     "ACCOUNT_NUMBER": 75,
     "PERSON": 70,
     "ORG": 70,

@@ -199,6 +199,9 @@ class FinTechPrivacyPipeline:
         # Step 6: Context Classification & Disambiguation
         # ---------------------------------------------------------------------
         all_candidate_entities = regex_entities + presidio_entities + spacy_entities + keyword_entities
+        if language_res.language_code != "en":
+            all_candidate_entities = [e for e in all_candidate_entities if e.type != "PERSON"]
+
         if self.context_classifier and all_candidate_entities:
             classified_entities = self.context_classifier.classify_all(
                 all_candidate_entities, normalized_text

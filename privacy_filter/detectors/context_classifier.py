@@ -183,6 +183,20 @@ MULTILINGUAL_KEYWORDS: Dict[str, Dict[str, List[str]]] = {
         "or": ["ਪਾਸୱାର੍ਡ"],
         "ur": ["پاس ورڈ"],
     },
+    "USERNAME": {
+        "en": ["username", "user name", "login id", "user id", "user", "login"],
+        "hi": ["उपयोगकर्ता नाम", "यूज़रनेम"],
+        "kn": ["ಬಳಕೆದಾರ ಹೆಸರು"],
+        "ta": ["பயனர் பெயர்"],
+        "te": ["వినియోగదారు పేరు"],
+        "ml": ["ഉപയോക്തൃനാമം"],
+        "bn": ["ব্যবহারকারীর নাম"],
+        "gu": ["વપરાશકર્તા નામ"],
+        "mr": ["वापरकर्ता नाव", "युझरनेम"],
+        "pa": ["ਯੂਜ਼ਰਨਾਮ"],
+        "or": ["ଉପଭୋକ୍ତା ନାମ"],
+        "ur": ["صارف का नाम"],
+    },
     "CARD": {
         "en": ["card number", "credit card", "debit card", "card no", "visa", "mastercard", "rupay", "amex"],
         "hi": ["कार्ड", "क्रेडिट कार्ड", "डेबिट कार्ड"],
@@ -269,7 +283,7 @@ class ContextClassifier:
         # overriding any other format match (like PAN, GST, etc.) except for unambiguous types.
         if entity.type not in {"EMAIL", "UPI", "IFSC", "DATE", "AMOUNT", "PHONE"}:
             match_res = self.find_closest_keyword(
-                entity, full_text, ["PASSWORD", "OTP", "MPIN", "TRANSACTION_PIN"]
+                entity, full_text, ["USERNAME", "PASSWORD", "OTP", "MPIN", "TRANSACTION_PIN"]
             )
             if match_res:
                 matched_type, distance = match_res

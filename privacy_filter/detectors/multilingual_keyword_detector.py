@@ -55,6 +55,11 @@ def validate_entity_format(entity_type: str, value: str) -> bool:
         return len(cleaned_digits) in (3, 4)
     elif entity_type == "UPI":
         return "@" in value
+    elif entity_type in ("PASSWORD", "USERNAME"):
+        if value.lower().strip() in {
+            "ipv4", "ipv6", "mac", "ip", "url", "ifsc", "pan", "upi", "gst", "cin", "email", "cvv", "otp"
+        }:
+            return False
     return True
 
 
