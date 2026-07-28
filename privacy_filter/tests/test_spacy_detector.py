@@ -27,17 +27,11 @@ class TestSpacyDetector(unittest.TestCase):
 
     def test_target_entities_set(self):
         self.assertIn("PERSON", SPACY_TARGET_ENTITIES)
-        self.assertIn("ORG", SPACY_TARGET_ENTITIES)
-        self.assertIn("LOC", SPACY_TARGET_ENTITIES)
         self.assertIn("DATE", SPACY_TARGET_ENTITIES)
-        self.assertIn("GPE", SPACY_TARGET_ENTITIES)
 
     def test_type_mapping(self):
         self.assertEqual(SPACY_TYPE_MAP["PERSON"], "PERSON")
-        self.assertEqual(SPACY_TYPE_MAP["ORG"], "ORG")
-        self.assertEqual(SPACY_TYPE_MAP["LOC"], "LOC")
         self.assertEqual(SPACY_TYPE_MAP["DATE"], "DATE")
-        self.assertEqual(SPACY_TYPE_MAP["GPE"], "GPE")
 
     def test_graceful_fallback(self):
         detector = SpacyDetector()

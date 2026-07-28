@@ -19,16 +19,12 @@ PRESIDIO_TYPE_MAP: Dict[str, str] = {
     "PHONE_NUMBER": "PHONE",
     "CREDIT_CARD": "CARD",
     "IP_ADDRESS": "IP_ADDRESS",
-    "LOCATION": "LOC",
     "DATE_TIME": "DATE",
-    "NIP": "TAX_ID",
     "IN_PAN": "PAN",
     "IN_AADHAAR": "AADHAAR",
     "IN_PASSPORT": "PASSPORT",
     "IN_VOTER_ID": "VOTER_ID",
-    "ORGANIZATION": "ORG",
     "URL": "URL",
-    "IBAN_CODE": "ACCOUNT_NUMBER",
 }
 
 
@@ -94,8 +90,9 @@ class PresidioDetector:
 
             entities: List[Entity] = []
             for res in results:
-                # Map entity type if custom mapping exists, otherwise keep Presidio entity name
-                mapped_type = self.type_mapping.get(res.entity_type, res.entity_type)
+                if res.entity_type not in self.type_mapping:
+                    continue
+                mapped_type = self.type_mapping[res.entity_type]
                 matched_text = text[res.start : res.end]
 
                 entity = Entity(

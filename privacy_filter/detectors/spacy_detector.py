@@ -13,15 +13,12 @@ from privacy_filter.detectors.regex_detector import Entity
 logger = logging.getLogger(__name__)
 
 # Default target spaCy entity types
-SPACY_TARGET_ENTITIES: Set[str] = {"PERSON", "ORG", "LOC", "DATE", "GPE"}
+SPACY_TARGET_ENTITIES: Set[str] = {"PERSON", "DATE"}
 
 # Standard mapping from spaCy Entity labels to pipeline Entity types
 SPACY_TYPE_MAP: Dict[str, str] = {
     "PERSON": "PERSON",
-    "ORG": "ORG",
-    "LOC": "LOC",
     "DATE": "DATE",
-    "GPE": "GPE",
 }
 
 

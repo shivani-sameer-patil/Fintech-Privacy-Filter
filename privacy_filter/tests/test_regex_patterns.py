@@ -61,7 +61,8 @@ class TestRegexPatterns(unittest.TestCase):
     def test_phone_regex(self):
         p = RegexPatternRegistry.get_pattern(EntityType.PHONE).compiled_regex
         self.assertTrue(p.search("Call +91 9876543210 immediately"))
-        self.assertTrue(p.search("Phone: 98765-43210"))
+        self.assertTrue(p.search("Phone: 98765 43210"))
+        self.assertFalse(p.search("Phone: 98765-43210"))
         self.assertTrue(p.search("Mobile 09123456789"))
         self.assertFalse(p.search("Number 1234567890"))
 
@@ -134,6 +135,15 @@ class TestRegexPatterns(unittest.TestCase):
         self.assertTrue(user_regex.search("उपयोगकर्ता नाम: admin_shivani"))
         self.assertTrue(user_regex.search("ব্যবহারকারীর নাম: admin_shivani"))
         self.assertTrue(user_regex.search("ഉപയോക്തൃനാമം: admin_shivani"))
+
+    def test_amount_regex(self):
+        p = RegexPatternRegistry.get_pattern(EntityType.AMOUNT).compiled_regex
+        self.assertTrue(p.search("Premium Amount: Rs. 12,500/year"))
+        self.assertTrue(p.search("Sanctioned Amount: Rs. 25,00,000.00 per year"))
+        self.assertTrue(p.search("Monthly EMI: Rs. 24,500/month"))
+        self.assertTrue(p.search("amount can be 23,456/-"))
+        self.assertTrue(p.search("45,67,400.00/-"))
+        self.assertTrue(p.search("he paid fifteen thousand two hundred thirty six rupees/annum"))
 
 
 if __name__ == "__main__":

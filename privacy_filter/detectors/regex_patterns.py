@@ -43,7 +43,6 @@ class EntityType(Enum):
     ACCOUNT_NUMBER = "ACCOUNT_NUMBER"
     IFSC = "IFSC"
     MICR = "MICR"
-    SWIFT = "SWIFT"
     CARD = "CARD"
     CVV = "CVV"
     UPI = "UPI"
@@ -153,17 +152,18 @@ RegexPatternRegistry._register(
     entity_type=EntityType.PHONE,
     category=EntityCategory.PERSONAL,
     raw_regex=r"""
-        \b
+        (?<!\w)
         (?:
-            (?:\+91[\s\.-]?|0)
+            (?:\+91|0)
+            \ ?
         )?
         [6-9]\d{4}
-        [\s\.-]?
+        \ ?
         \d{5}
         \b
     """,
-    description="Indian mobile number matching 10-digit formats starting with 6-9, with optional +91/0 prefix.",
-    examples=["+91 9876543210", "98765-43210", "09876543210", "9123456789"],
+    description="Indian mobile number matching 10-digit formats starting with 6-9, with optional +91/0 prefix and optional space.",
+    examples=["+91 9876543210", "98765 43210", "09876543210", "9123456789"],
 )
 
 # PAN
@@ -309,22 +309,6 @@ RegexPatternRegistry._register(
     examples=["400002015", "110002001"],
 )
 
-# SWIFT / BIC CODE
-RegexPatternRegistry._register(
-    entity_type=EntityType.SWIFT,
-    category=EntityCategory.BANK,
-    raw_regex=r"""
-        \b
-        [A-Z]{4}
-        [A-Z]{2}
-        [A-Z0-9]{2}
-        (?:[A-Z0-9]{3})?
-        \b
-    """,
-    description="SWIFT/BIC Code (8 or 11 uppercase characters) for international banking transactions.",
-    examples=["SBININBBXXX", "HDFCINBB", "ICICINBB123"],
-    flags=re.VERBOSE,  # Strict uppercase checking
-)
 
 # CREDIT / DEBIT CARD
 RegexPatternRegistry._register(
@@ -384,15 +368,57 @@ _digits = r"\b\d+(?:,\d+)*(?:\.\d+)?\b"
 _num_words = rf"(?:{_english_words}|(?:{_boundary}{_indic_words}{_boundary_end})|{_digits})"
 
 _seq = r"(?:" + _num_words + r"[\s\-\,]+(?:and[\s\-]+)?)*" + _num_words
-_cur = r"(?:rupees?|rs\.?|inr|₹|रुपये|रूपये|रूपए|रुपए|रूपया|রুপয়া|रू|रु\.?|টাকা|টকা|ট\.?|ଟଙ୍କା|ଟ\.?|ਰੁਪਏ|ਰੁ\.?|રૂપિયા|રૂ\.?|ரூபாய்|ரூ\.?|ரூపాయి|రూపాయలు|రూ\.?|ರೂಪಾಯಿ|ರೂ\.?|രൂപ|രൂ\.?|روپے|روپیہ|روپئے|رو\.?|ᱴᱟᱠᱟ|লুপা|\$|€|£|¥)"
-_suffix = r"(?:[\s\-/]*(?:year|annum|month|day|hour|week|yr|mo|pm|pa|p\.a\.|p\.m\.|annually|monthly|weekly|daily|per\s*(?:year|annum|month|day|hour|week|yr|mo|annum)))?"
+_cur = (
+    r"(?:"
+    # English
+    r"rupees?|rs\.?|inr|₹|"
+
+    # Hindi
+    r"रुपये|रूपये|रुपए|रूपए|रुपया|रूपया|रू\.?|रु\.?|"
+
+    # Kannada
+    r"ರೂಪಾಯಿ|ರೂಪಾಯಿಗಳು|ರೂಪಾಯಿಯ|ರೂ\.?|"
+
+    # Tamil
+    r"ரூபாய்|ரூபாய்கள்|ரூ\.?|"
+
+    # Telugu
+    r"రూపాయి|రూపాయలు|రూ\.?|"
+
+    # Malayalam
+    r"രൂപ|രൂപകൾ|രൂപായ്|രൂ\.?|"
+
+    # Bengali
+    r"টাকা|রুপি|রূপি|৳|"
+
+    # Gujarati
+    r"રૂપિયો|રૂપિયા|રૂપિયાં|રૂ\.?|"
+
+    # Marathi
+    r"रुपये|रूपये|रुपया|रूपया|रु\.?|"
+
+    # Punjabi (Gurmukhi)
+    r"ਰੁਪਇਆ|ਰੁਪਏ|ਰੁਪਈਆ|ਰੁ\.?|"
+
+    # Odia
+    r"ଟଙ୍କା|ରୁପି|ରୂପି|"
+
+    # Urdu
+    r"روپیہ|روپے|روپے۔?|"
+
+    # Assamese
+    r"টকা|ৰূপী|ৰুপী"
+    r")"
+)
+# Amount suffixes: allows optional spaces before /year, per year, etc., and support /- endings.
+_amt_suffix = r"(?:\s*(?:/-|/year|per\s+year|/annum|per\s+annum|/month|per\s+month|/pa|/pm|pa|pm))?"
 
 RegexPatternRegistry._register(
     entity_type=EntityType.AMOUNT,
     category=EntityCategory.FINANCIAL,
-    raw_regex=rf"{_boundary}(?:{_cur}\s*(?:{_seq})|(?:{_seq})\s*{_cur}){_suffix}{_boundary_end}",
-    description="Monetary amount in Indian Rupees (INR) or major currencies, in numeric, comma-separated, or word formats.",
-    examples=["Rs. 15,000", "₹ 15,000", "15,000 रुपये", "15,000.00 rupees", "$1,500", "Three thousand two hunderd twenty one rupees", "Rs. 12,500/year", "Rs. 12,500/annum", "રૂ. ૧,૪૫,૦૦૦.૦૦", "ଟଙ୍କା ୧,୪,୦୦୦.୦୦", "টাকা ১,৪৫,০০০.০০"],
+    raw_regex=rf"{_boundary}(?:(?:{_cur}\s*(?:{_seq})|(?:{_seq})\s*{_cur}){_amt_suffix}|(?:{_seq})/-){_boundary_end}",
+    description="Monetary amount in Indian Rupees (INR), in numeric, comma-separated, or word formats, with optional period suffixes or slash-hyphen endings.",
+    examples=["Rs. 15,000", "₹ 15,000", "15,000 रुपये", "15,000.00 rupees", "Three thousand two hunderd twenty one rupees", "Rs. 12,500/year", "23,456/-"],
     flags=re.IGNORECASE,
 )
 

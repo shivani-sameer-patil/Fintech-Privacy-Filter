@@ -155,9 +155,33 @@ MULTILINGUAL_KEYWORDS: Dict[str, Dict[str, List[str]]] = {
         "hi": ["आईएफएससी", "आईएफएससी कोड"],
         "kn": ["ಐಎಫ್ಎಸ್ಸಿ", "ಐಎಫ್ಎಸ್ಸಿ ಕೋಡ್"],
     },
-    "SWIFT": {
-        "en": ["swift code", "swift", "bic code", "bic", "swift-bic"],
-        "hi": ["स्विफ्ट", "स्विफ्ट कोड"],
+    "PHONE": {
+        "en": ["phone", "mobile", "call", "contact", "number", "ph", "mob", "telephone", "cell", "no", "dial", "register"],
+        "hi": ["फ़ोन", "मोबाइल", "नंबर", "संपर्क", "फोन", "दूरभाष"],
+        "kn": ["ಫೋನ್", "ಮೊಬైಲ್", "ಸಂಖ್ಯೆ", "ಸಂಪರ್ಕ"],
+        "ta": ["தொலைபேసి", "கைபேసి", "எண்", "தொடர்பு"],
+        "te": ["ఫోన్", "మొబైల్", "నెంబర్", "సంప్రదించండి"],
+        "ml": ["ഫോൺ", "മൊബൈൽ", "നമ്പർ", "ബന്ധപ്പെടുക"],
+        "bn": ["ফোন", "মোバイル", "নম্বর", "যোগাযোগ"],
+        "gu": ["ફોન", "મોબાઈલ", "નંબર", "સંપર્ક"],
+        "mr": ["फोन", "मोबाईल", "क्रमांक", "संपर्क"],
+        "pa": ["ਫੋਨ", "ਮੋਬਾਈਲ", "ਨੰਬਰ"],
+        "or": ["ଫୋନ୍", "ମୋବାଇଲ୍", "ନମ୍ବର"],
+        "ur": ["فون", "موبائل", "نمبر"],
+    },
+    "PASSWORD": {
+        "en": ["password", "pwd", "passcode", "secret", "credentials"],
+        "hi": ["पासवर्ड", "कूटशब्द"],
+        "kn": ["ಪಾಸ್ವರ್ಡ್"],
+        "ta": ["கடவுச்சொல்"],
+        "te": ["పాస్వర్డ్"],
+        "ml": ["പാസ്‌വേഡ്"],
+        "bn": ["পাসওয়ার্ড"],
+        "gu": ["પાસવર્ડ"],
+        "mr": ["पासवर्ड"],
+        "pa": ["ਪਾਸਵਰਡ"],
+        "or": ["ਪਾਸୱାର੍ਡ"],
+        "ur": ["پاس ورڈ"],
     },
     "CARD": {
         "en": ["card number", "credit card", "debit card", "card no", "visa", "mastercard", "rupay", "amex"],
@@ -241,6 +265,37 @@ class ContextClassifier:
         if not full_text or entity.start < 0:
             return entity
 
+        # Check if the surrounding context strongly indicates this is a PASSWORD, OTP, or PIN,
+        # overriding any other format match (like PAN, GST, etc.) except for unambiguous types.
+        if entity.type not in {"EMAIL", "UPI", "IFSC", "DATE", "AMOUNT", "PHONE"}:
+            match_res = self.find_closest_keyword(
+                entity, full_text, ["PASSWORD", "OTP", "MPIN", "TRANSACTION_PIN"]
+            )
+            if match_res:
+                matched_type, distance = match_res
+                # If a high-security credential keyword is extremely close (within 25 characters),
+                # reclassify to that type.
+                if distance < 25:
+                    return Entity(
+                        type=matched_type,
+                        text=entity.text,
+                        start=entity.start,
+                        end=entity.end,
+                        confidence=0.98,
+                        category="CONTEXT_DISAMBIGUATED",
+                    )
+
+        # Skip disambiguation for strong/well-defined formats
+        if entity.type in {
+            "EMAIL", "CARD", "UPI", "PAN", "GST", "CIN", 
+            "DRIVING_LICENSE", "PASSPORT", "VOTER_ID", "DATE", "AMOUNT", "LOAN_ACCOUNT"
+        }:
+            return entity
+
+        # Also skip disambiguation for PHONE numbers that have a country code
+        if entity.type == "PHONE" and "+91" in entity.text:
+            return entity
+
         cleaned_digits = "".join(c for c in entity.text if c.isdigit())
 
         # Disambiguation for 12-digit numeric sequences
@@ -262,6 +317,35 @@ class ContextClassifier:
 
             # Isolated 12-digit number without any contextual indicators
             if entity.type in {"ACCOUNT_NUMBER", "AADHAAR", "MICR", "CVV"}:
+                return Entity(
+                    type="UNKNOWN_NUMERIC_ID",
+                    text=entity.text,
+                    start=entity.start,
+                    end=entity.end,
+                    confidence=0.50,
+                    category="ISOLATED_NUMERIC",
+                )
+
+        # Disambiguation for 10-digit numeric sequences (PHONE vs ACCOUNT_NUMBER)
+        elif len(cleaned_digits) == 10:
+            match_res = self.find_closest_keyword(
+                entity, full_text, ["PHONE", "ACCOUNT_NUMBER"]
+            )
+            if match_res:
+                matched_type, _ = match_res
+                conf = 1.0 if matched_type == "PHONE" else 0.95
+                return Entity(
+                    type=matched_type,
+                    text=entity.text,
+                    start=entity.start,
+                    end=entity.end,
+                    confidence=conf,
+                    category="CONTEXT_DISAMBIGUATED",
+                )
+            else:
+                if entity.text.strip().startswith("+91"):
+                    return entity
+                # Isolated 10-digit number without context -> UNKNOWN_NUMERIC_ID
                 return Entity(
                     type="UNKNOWN_NUMERIC_ID",
                     text=entity.text,
@@ -317,4 +401,49 @@ class ContextClassifier:
 
     def classify_all(self, entities: List[Entity], full_text: str) -> List[Entity]:
         """Disambiguates a list of candidate Entity objects against full document context."""
-        return [self.classify_entity(e, full_text) for e in entities]
+        NLP_IGNORE_WORDS = {
+            "otp", "pan", "aadhaar", "ifsc", "micr", "swift", "upi", "gst", "cin", "email", "phone", "mobile", 
+            "sms", "verification", "account", "customer", "agent", "user", "bank", "card", "loan", "policy", 
+            "cheque", "insurance", "rs", "rupees", "inr", "date", "amount", "number", "id", "code", "name",
+            "monthly", "weekly", "yearly", "daily", "annual", "annually", "quarterly"
+        }
+        classified_entities = []
+        for e in entities:
+            # 1. Truncate generic NLP entities that span across newlines
+            if e.type in {"PERSON", "ORG", "LOC", "GPE", "DATE"}:
+                if "\n" in e.text or "\r" in e.text:
+                    nl_pos = e.text.find("\n")
+                    if nl_pos == -1 or (e.text.find("\r") != -1 and e.text.find("\r") < nl_pos):
+                        nl_pos = e.text.find("\r")
+                    trimmed = e.text[:nl_pos].strip()
+                    if not trimmed:
+                        continue
+                    e = Entity(
+                        type=e.type,
+                        text=trimmed,
+                        start=e.start,
+                        end=e.start + len(trimmed),
+                        confidence=e.confidence,
+                        category=e.category
+                    )
+
+            # 2. Filter out false positive NLP detections for common technical / layout / frequency keywords
+            if e.type in {"PERSON", "ORG", "LOC", "GPE", "DATE"} and e.text.strip().lower() in NLP_IGNORE_WORDS:
+                continue
+
+            # 3. Validate PHONE entities (must not contain '-' or '.' and clean digits must be exactly 10)
+            if e.type == "PHONE":
+                if "-" in e.text or "." in e.text:
+                    continue
+                clean = e.text.strip()
+                if clean.startswith("+91"):
+                    clean = clean[3:].strip()
+                elif clean.startswith("91") and len(clean) > 10:
+                    clean = clean[2:].strip()
+                elif clean.startswith("0"):
+                    clean = clean[1:].strip()
+                digits_count = sum(c.isdigit() for c in clean)
+                if digits_count != 10:
+                    continue
+            classified_entities.append(self.classify_entity(e, full_text))
+        return classified_entities
