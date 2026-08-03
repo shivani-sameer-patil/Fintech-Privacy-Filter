@@ -7,8 +7,9 @@ by scanning surrounding multilingual context keywords across all official Indian
 """
 
 import re
+import time
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Set, Tuple
+from typing import Dict, List, Optional, Set, Tuple, Any
 
 from privacy_filter.detectors.regex_detector import Entity
 
@@ -252,18 +253,34 @@ class ContextClassifier:
         self,
         window_size: int = 50,
         keyword_dict: Optional[Dict[str, Dict[str, List[str]]]] = None,
+        config: Optional[Any] = None,
     ) -> None:
         """Initialize ContextClassifier.
 
         Args:
             window_size: Number of characters before and after entity to scan for context.
             keyword_dict: Custom multilingual keyword dictionary.
+            config: Optional PipelineConfig settings object.
         """
         self.window_size = window_size
         self.keyword_dict = keyword_dict or MULTILINGUAL_KEYWORDS
+        self.config = config
 
         self._flat_keywords: Dict[str, List[str]] = {}
         self._build_flat_keyword_map()
+
+        self.llm_execution_time_ms = 0.0
+
+        # Lazy initialize LLM Client if enabled
+        self.llm_client = None
+        if self.config and getattr(self.config, "enable_llm_classifier", False):
+            from privacy_filter.detectors.llm_client import LLMClassifierClient
+            self.llm_client = LLMClassifierClient(
+                provider=self.config.llm_provider,
+                model_name=self.config.llm_model_name,
+                api_url=self.config.llm_api_url,
+                timeout=self.config.llm_timeout_seconds,
+            )
 
     def _build_flat_keyword_map(self) -> None:
         """Flattens multilingual keyword definitions into lower-case search lists."""
@@ -354,6 +371,82 @@ class ContextClassifier:
 
         return None
 
+    def _classify_with_llm(
+        self, entity: Entity, full_text: str, candidate_types: List[str]
+    ) -> Optional[Entity]:
+        """Invokes local LLM to resolve ambiguous context using zero-shot classification."""
+        if not self.llm_client:
+            return None
+
+        # Build context segment around the entity and highlight it
+        start_idx = max(0, entity.start - self.window_size)
+        end_idx = min(len(full_text), entity.end + self.window_size)
+        context_window = (
+            full_text[start_idx:entity.start] +
+            f" <candidate>{entity.text}</candidate> " +
+            full_text[entity.end:end_idx]
+        ).strip()
+
+        type_descriptions = {
+            "AADHAAR": "12-digit Indian national identity card number (UID / Aadhaar / आधार)",
+            "ACCOUNT_NUMBER": "Bank account number (savings, checking, deposit, etc.)",
+            "LOAN_ACCOUNT": "Loan account number (mortgage, personal loan, credit line)",
+            "PHONE": "10-digit telephone / mobile phone number",
+            "UNKNOWN_NUMERIC_ID": "Generic unidentified sequence of digits"
+        }
+
+        type_options_list = []
+        for t in candidate_types:
+            desc = type_descriptions.get(t, "")
+            type_options_list.append(f'- "{t}": {desc}')
+        type_options_list.append(f'- "UNKNOWN_NUMERIC_ID": {type_descriptions["UNKNOWN_NUMERIC_ID"]}')
+
+        type_options = "\n".join(type_options_list)
+
+        prompt = f"""You are a PII classification system. Your task is to map the candidate entity wrapped in <candidate>...</candidate> tags in the Context Segment to the most appropriate category type from the list below based on its surrounding context words.
+
+Guidelines:
+- Look at the words closest to <candidate>...</candidate> in the Context Segment to determine its type. Do not confuse it with other numbers mentioned in the same segment.
+- If the candidate is a 12-digit sequence of numbers and is described by or near words like "national identity card", "UID", "Aadhaar", "आधार", or "ಆಧಾರ್", classify it as "AADHAAR".
+- If the candidate is described by or near words like "bank account", "savings account", "checking account", "खाता", "खाते", "ಖಾತೆ", "ಖಾತೆ ಸಂಖ್ಯೆ", "खाते क्रमांक", or near terms like "bank", "IFSC", "बैंक", classify it as "ACCOUNT_NUMBER".
+- If the candidate is described by or near words like "loan", "lending", "mortgage", "ऋण", or "ಸಾಲ", classify it as "LOAN_ACCOUNT".
+- If the candidate is a 10-digit phone number, classify it as "PHONE".
+
+Context Segment: "{context_window}"
+
+Target Category Types:
+{type_options}
+
+Respond ONLY with a JSON object in this format:
+{{
+  "disambiguated_type": "...",
+  "confidence": 0.0 to 1.0,
+  "reasoning": "brief explanation"
+}}"""
+
+        try:
+            start_llm = time.perf_counter()
+            res_json = self.llm_client.generate_json(prompt)
+            duration_ms = (time.perf_counter() - start_llm) * 1000.0
+            self.llm_execution_time_ms += duration_ms
+
+            if res_json and isinstance(res_json, dict):
+                disambiguated_type = res_json.get("disambiguated_type")
+                confidence = res_json.get("confidence", 0.5)
+                
+                if disambiguated_type in candidate_types or disambiguated_type == "UNKNOWN_NUMERIC_ID":
+                    return Entity(
+                        type=disambiguated_type,
+                        text=entity.text,
+                        start=entity.start,
+                        end=entity.end,
+                        confidence=confidence,
+                        category=f"LLM_DISAMBIGUATED_{self.llm_client.provider.upper()}",
+                    )
+        except Exception:
+            pass
+        return None
+
     def classify_entity(self, entity: Entity, full_text: str) -> Entity:
         """Analyzes context surrounding entity using proximity scoring to resolve type ambiguity."""
         if not full_text or entity.start < 0:
@@ -395,6 +488,13 @@ class ContextClassifier:
         # Disambiguation for 12-digit numeric sequences
         if len(cleaned_digits) == 12:
             is_valid_aadhaar = self.is_verhoeff_valid(cleaned_digits)
+            if self.llm_client:
+                llm_entity = self._classify_with_llm(
+                    entity, full_text, ["AADHAAR", "LOAN_ACCOUNT", "ACCOUNT_NUMBER"]
+                )
+                if llm_entity:
+                    return llm_entity
+
             match_res = self.find_closest_keyword(
                 entity, full_text, ["AADHAAR", "LOAN_ACCOUNT", "ACCOUNT_NUMBER"]
             )
@@ -436,6 +536,13 @@ class ContextClassifier:
 
         # Disambiguation for 10-digit numeric sequences (PHONE vs ACCOUNT_NUMBER)
         elif len(cleaned_digits) == 10:
+            if self.llm_client:
+                llm_entity = self._classify_with_llm(
+                    entity, full_text, ["PHONE", "ACCOUNT_NUMBER"]
+                )
+                if llm_entity:
+                    return llm_entity
+
             match_res = self.find_closest_keyword(
                 entity, full_text, ["PHONE", "ACCOUNT_NUMBER"]
             )
@@ -450,18 +557,18 @@ class ContextClassifier:
                     confidence=conf,
                     category="CONTEXT_DISAMBIGUATED",
                 )
-            else:
-                if entity.text.strip().startswith("+91"):
-                    return entity
-                # Isolated 10-digit number without context -> UNKNOWN_NUMERIC_ID
-                return Entity(
-                    type="UNKNOWN_NUMERIC_ID",
-                    text=entity.text,
-                    start=entity.start,
-                    end=entity.end,
-                    confidence=0.50,
-                    category="ISOLATED_NUMERIC",
-                )
+
+            if entity.text.strip().startswith("+91"):
+                return entity
+            # Isolated 10-digit number without context -> UNKNOWN_NUMERIC_ID
+            return Entity(
+                type="UNKNOWN_NUMERIC_ID",
+                text=entity.text,
+                start=entity.start,
+                end=entity.end,
+                confidence=0.50,
+                category="ISOLATED_NUMERIC",
+            )
 
         # Disambiguation for 9-digit numeric sequences (MICR vs Account Number)
         elif len(cleaned_digits) == 9:
@@ -509,6 +616,7 @@ class ContextClassifier:
 
     def classify_all(self, entities: List[Entity], full_text: str) -> List[Entity]:
         """Disambiguates a list of candidate Entity objects against full document context."""
+        self.llm_execution_time_ms = 0.0
         NLP_IGNORE_WORDS = {
             "otp", "pan", "aadhaar", "ifsc", "micr", "swift", "upi", "gst", "cin", "email", "phone", "mobile", 
             "sms", "verification", "account", "customer", "agent", "user", "bank", "card", "loan", "policy", 

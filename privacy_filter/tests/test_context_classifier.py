@@ -134,6 +134,68 @@ class TestContextClassifier(unittest.TestCase):
         self.assertEqual(res.type, "PINCODE")
         self.assertEqual(res.confidence, 0.50)
 
+    def test_llm_mock_disambiguation_12_digit(self):
+        from privacy_filter.config import PipelineConfig
+        config = PipelineConfig(
+            enable_llm_classifier=True,
+            llm_provider="mock"
+        )
+        classifier_llm = ContextClassifier(window_size=50, config=config)
+        
+        text = "This sequence 4567 8912 3456 represents a national identity card."
+        candidate = Entity(
+            type="ACCOUNT_NUMBER",
+            text="4567 8912 3456",
+            start=14,
+            end=28,
+            confidence=1.0,
+        )
+        res = classifier_llm.classify_entity(candidate, text)
+        self.assertEqual(res.type, "AADHAAR")
+        self.assertEqual(res.confidence, 0.95)
+        self.assertEqual(res.category, "LLM_DISAMBIGUATED_MOCK")
+
+    def test_llm_mock_disambiguation_10_digit(self):
+        from privacy_filter.config import PipelineConfig
+        config = PipelineConfig(
+            enable_llm_classifier=True,
+            llm_provider="mock"
+        )
+        classifier_llm = ContextClassifier(window_size=50, config=config)
+        
+        text = "My primary identifier is 1234567890."
+        candidate = Entity(
+            type="PHONE",
+            text="1234567890",
+            start=25,
+            end=35,
+            confidence=1.0,
+        )
+        res = classifier_llm.classify_entity(candidate, text)
+        self.assertEqual(res.type, "ACCOUNT_NUMBER")
+        self.assertEqual(res.confidence, 0.90)
+        self.assertEqual(res.category, "LLM_DISAMBIGUATED_MOCK")
+
+    def test_llm_fallback_on_failure(self):
+        from privacy_filter.config import PipelineConfig
+        config = PipelineConfig(
+            enable_llm_classifier=True,
+            llm_provider="mock"
+        )
+        classifier_llm = ContextClassifier(window_size=50, config=config)
+        
+        text = "Random number 987654321098."
+        candidate = Entity(
+            type="ACCOUNT_NUMBER",
+            text="987654321098",
+            start=14,
+            end=26,
+            confidence=1.0,
+        )
+        res = classifier_llm.classify_entity(candidate, text)
+        self.assertEqual(res.type, "UNKNOWN_NUMERIC_ID")
+        self.assertEqual(res.confidence, 0.50)
+
 
 if __name__ == "__main__":
     unittest.main()

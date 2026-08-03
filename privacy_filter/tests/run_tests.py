@@ -10,6 +10,9 @@ from pathlib import Path
 # Add project root directory to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent.parent))
 
+from privacy_filter.config import PipelineConfig
+PipelineConfig.llm_provider = "mock"
+
 if __name__ == "__main__":
     test_dir = Path(__file__).resolve().parent
     suite = unittest.defaultTestLoader.discover(start_dir=str(test_dir), pattern="test_*.py")

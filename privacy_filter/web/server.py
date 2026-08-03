@@ -63,6 +63,7 @@ METRICS = {
         "presidio": 0.0,
         "spacy": 0.0,
         "keyword": 0.0,
+        "llm": 0.0,
     },
 }
 

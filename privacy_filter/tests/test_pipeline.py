@@ -16,7 +16,11 @@ from privacy_filter.detectors.pipeline import FinTechPrivacyPipeline, PipelineOu
 class TestFinTechPrivacyPipeline(unittest.TestCase):
 
     def setUp(self):
-        self.pipeline = FinTechPrivacyPipeline()
+        config = PipelineConfig(
+            enable_llm_classifier=True,
+            llm_provider="mock"
+        )
+        self.pipeline = FinTechPrivacyPipeline(config=config)
 
     def test_empty_input(self):
         output = self.pipeline.process("")

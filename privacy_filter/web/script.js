@@ -840,13 +840,14 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
     metricCount.textContent = data.entities_masked_count;
 
     // Update Telemetry Progress Bars
-    const lats = data.detector_latencies || { regex: 0, presidio: 0, spacy: 0, keyword: 0 };
+    const lats = data.detector_latencies || { regex: 0, presidio: 0, spacy: 0, keyword: 0, llm: 0 };
     const regexLat = lats.regex || 0;
     const presidioLat = lats.presidio || 0;
     const spacyLat = lats.spacy || 0;
     const keywordLat = lats.keyword || 0;
+    const llmLat = lats.llm || 0;
 
-    const maxLat = Math.max(regexLat, presidioLat, spacyLat, keywordLat, 1);
+    const maxLat = Math.max(regexLat, presidioLat, spacyLat, keywordLat, llmLat, 1);
 
     document.getElementById("bar-regex").style.width = `${(regexLat / maxLat) * 100}%`;
     document.getElementById("val-regex").textContent = `${regexLat.toFixed(2)} ms`;
@@ -859,6 +860,9 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
 
     document.getElementById("bar-keyword").style.width = `${(keywordLat / maxLat) * 100}%`;
     document.getElementById("val-keyword").textContent = `${keywordLat.toFixed(2)} ms`;
+
+    document.getElementById("bar-llm").style.width = `${(llmLat / maxLat) * 100}%`;
+    document.getElementById("val-llm").textContent = `${llmLat.toFixed(2)} ms`;
 
     let formattedText = escapeHtml(data.masked_text);
 

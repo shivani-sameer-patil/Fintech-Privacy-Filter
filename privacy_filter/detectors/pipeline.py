@@ -24,6 +24,7 @@ from privacy_filter.detectors.presidio_detector import PresidioDetector
 from privacy_filter.detectors.regex_detector import Entity, RegexDetector
 from privacy_filter.detectors.spacy_detector import SpacyDetector
 from privacy_filter.detectors.multilingual_keyword_detector import MultilingualKeywordDetector
+from privacy_filter.detectors.llm_detector import LLMDetector
 
 
 @dataclass
@@ -116,10 +117,15 @@ class FinTechPrivacyPipeline:
         )
 
         self.context_classifier = (
-            ContextClassifier(window_size=self.config.context_window_size)
+            ContextClassifier(
+                window_size=self.config.context_window_size,
+                config=self.config
+            )
             if self.config.enable_context_classification
             else None
         )
+        if self.context_classifier:
+            self.context_classifier.llm_client = None
 
         self.keyword_detector = (
             MultilingualKeywordDetector(
@@ -130,9 +136,15 @@ class FinTechPrivacyPipeline:
             else None
         )
 
+        self.llm_detector = (
+            LLMDetector(config=self.config)
+            if self.config.enable_llm_classifier
+            else None
+        )
+
         self.merger = EntityMerger()
         self.masker = Masker(tag_mapping=self.config.tag_mapping)
-        self.executor = ThreadPoolExecutor(max_workers=4)
+        self.executor = ThreadPoolExecutor(max_workers=5)
 
     def process(self, text: str) -> PipelineOutput:
         """Executes the master 10-step FinTech privacy filtering pipeline.
@@ -206,22 +218,23 @@ class FinTechPrivacyPipeline:
                 _run_timed_detector, self.keyword_detector.detect, normalized_text
             )
 
+        if self.llm_detector:
+            futures["llm"] = self.executor.submit(
+                _run_timed_detector, self.llm_detector.detect, normalized_text
+            )
+
         regex_entities, regex_time = futures["regex"].result() if "regex" in futures else ([], 0.0)
         presidio_entities, presidio_time = futures["presidio"].result() if "presidio" in futures else ([], 0.0)
         spacy_entities, spacy_time = futures["spacy"].result() if "spacy" in futures else ([], 0.0)
         keyword_entities, keyword_time = futures["keyword"].result() if "keyword" in futures else ([], 0.0)
+        llm_entities, llm_time = futures["llm"].result() if "llm" in futures else ([], 0.0)
 
-        detector_latencies = {
-            "regex": regex_time,
-            "presidio": presidio_time,
-            "spacy": spacy_time,
-            "keyword": keyword_time,
-        }
+
 
         # ---------------------------------------------------------------------
         # Step 6: Context Classification & Disambiguation
         # ---------------------------------------------------------------------
-        all_candidate_entities = regex_entities + presidio_entities + spacy_entities + keyword_entities
+        all_candidate_entities = regex_entities + presidio_entities + spacy_entities + keyword_entities + llm_entities
         if language_res.language_code != "en":
             # Keep PERSON entities in non-English text only if they were matched by the hybrid name detector
             all_candidate_entities = [
@@ -230,6 +243,7 @@ class FinTechPrivacyPipeline:
             ]
 
         if self.context_classifier and all_candidate_entities:
+            self.context_classifier.llm_execution_time_ms = 0.0
             classified_entities = self.context_classifier.classify_all(
                 all_candidate_entities, normalized_text
             )
@@ -252,6 +266,18 @@ class FinTechPrivacyPipeline:
         # Step 9 & 10: Final Metrics & Pipeline Output
         # ---------------------------------------------------------------------
         elapsed_ms = (time.perf_counter() - start_time) * 1000.0
+
+        llm_time = 0.0
+        if self.context_classifier:
+            llm_time = getattr(self.context_classifier, "llm_execution_time_ms", 0.0)
+
+        detector_latencies = {
+            "regex": regex_time,
+            "presidio": presidio_time,
+            "spacy": spacy_time,
+            "keyword": keyword_time,
+            "llm": llm_time,
+        }
 
         return PipelineOutput(
             original_text=text,

@@ -1,0 +1,30 @@
+Language Detected: pa (Punjabi)
+Masked Text:
+===============================
+PUNJABI
+===============================
+
+ਗਾਹਕ ਦਾ ਨਾਮ: ਰਾਹੁਲ ਸ਼ਰਮਾ
+ਗਾਹਕ ਦਾ ਨਾਮ: ਰਾਹੁਲ ਸ਼ਰਮਾ
+
+ਤਨਖਾਹ: [AMOUNT]
+ਤਨਖਾਹ: [AMOUNT]
+
+===============================
+URDU
+===============================
+
+[PERSON] کا نام: راول شرما
+[PERSON] کا نام: راول شرما
+
+تنخواہ: [AMOUNT]
+تنخواہ: [AMOUNT]
+
+
+Entities detected:
+  Type: AMOUNT | Text: '₹80,000' | Start: 131 | End: 138 | Conf: 1.0 | Cat: FINANCIAL
+  Type: AMOUNT | Text: '₹80,000' | Start: 146 | End: 153 | Conf: 1.0 | Cat: FINANCIAL
+  Type: PERSON | Text: 'صارف' | Start: 225 | End: 229 | Conf: 0.85 | Cat: SPACY_NER
+  Type: PERSON | Text: 'صارف' | Start: 248 | End: 252 | Conf: 0.85 | Cat: SPACY_NER
+  Type: AMOUNT | Text: '80,000 روپے' | Start: 280 | End: 291 | Conf: 1.0 | Cat: FINANCIAL
+  Type: AMOUNT | Text: '80,000 روپے' | Start: 300 | End: 311 | Conf: 1.0 | Cat: FINANCIAL
