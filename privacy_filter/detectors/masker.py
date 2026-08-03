@@ -102,9 +102,9 @@ class Masker:
         if not text or not entities:
             return MaskResult(masked_text=text or "", entities_masked=0, entity_counts={})
 
-        # Filter entities with valid character spans
+        # Filter entities with valid character spans and exclude PERSON entities from masking
         valid_entities = [
-            e for e in entities if 0 <= e.start < e.end <= len(text)
+            e for e in entities if 0 <= e.start < e.end <= len(text) and e.type != "PERSON"
         ]
 
         # Sort entities in reverse order by start position (end-of-document backwards)

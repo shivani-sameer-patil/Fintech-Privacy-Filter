@@ -17,6 +17,8 @@ from dataclasses import dataclass, field
 from enum import Enum, auto
 from typing import Dict, List, Pattern, Optional
 
+from privacy_filter.detectors.indic_number_words import INDIC_NUMBER_WORDS_BY_LANG
+
 
 class EntityCategory(Enum):
     """Categories of sensitive entities."""
@@ -347,8 +349,9 @@ RegexPatternRegistry._register(
     raw_regex=r"""
         \b
         (?:CVV|CVC|CVV2|CVC2|SECURITY\s+CODE|CVV\s+CODE|CVC\s+CODE)
+        (?:\s+is)?
         [:\s\.-]*
-        \d{3,4}
+        (\d{3,4})
         \b
     """,
     description="Card Verification Value (CVV/CVC) with explicit context indicator.",
@@ -360,8 +363,20 @@ _boundary = r"(?<![^\s\.\,\!\?\(\)\[\]\{\}\-\:।\/])"
 _boundary_end = r"(?![^\s\.\,\!\?\(\)\[\]\{\}\-\:।\/])"
 
 _english_words = r"\b(?:one|two|three|four|five|six|seven|eight|nine|ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety|hundred|hunderd|thousand|lakhs?|crores?|millions?|billions?|trillions?|zero)\b"
+# Gather all words from all languages dynamically
+# Exclude compound words containing whitespace to prevent catastrophic backtracking in recursive number sequence matching
+_all_indic_words_list = []
+for _words in INDIC_NUMBER_WORDS_BY_LANG.values():
+    for _w in _words:
+        _w_clean = _w.strip()
+        if _w_clean and not any(_c.isspace() for _c in _w_clean):
+            _all_indic_words_list.append(_w_clean)
 
-_indic_words = r"(?:एक|दो|तीन|चार|पाँच|पांच|छह|छतः|सात|आठ|नौ|दस|ग्यारह|बारह|तेरह|चौदह|पंद्रह|पन्द्रह|सोलह|सत्रह|अठारह|उन्नीस|बीस|इक्कीस|बाईस|तेईस|चौबीस|पच्चीस|छब्बीस|सत्ताईस|अठ्ठाईस|अट्ठाईस|उनतीस|उन्नतीस|तीस|इकतीस|बत्तीस|तैंतीस|तेतीस|चौंतीस|पैंतीस|छत्तीस|सैंतीस|अड़तीस|अढ़तीस|उनतालीस|उन्नतालीस|चालीस|इकतालीस|इकतालिस|बयालीस|तैंतालीस|तेतालीस|chiyalees|चौआलीस|पैंतालीस|छियालीस|सैंतालीस|अड़तालीस|अढ़तालीस|उनचाas|पचास|इक्यावन|बावन|तिरेपन|तिरपन|चौवन|पचपन|छप्पन|सत्तावन|अठ्ठावन|अट्ठावन|उनसठ|साठ|इकसठ|बासठ|तिरेसठ|तिरसठ|चौंसठ|पैंसठ|छियासठ|सरसठ|अड़सठ|अढ़सठ|उनहत्तर|सत्तर|इकहत्तर|बहत्तर|तिहत्तर|चौहत्तर|पचहत्तर|छिहत्तर|सतहत्तर|अठहत्तर|उन्यासी|उनासी|अस्सी|इक्यासी|बयासी|तिरासी|चौरासी|पचासी|छियासी|सत्तासी|अठ्यासी|अट्ठासी|नवासी|नब्बे|इक्यानवे|बानवे|तिर्यानवे|तिरानवे|चौरानवे|पञ्चानवे|पचानवे|छियानवे|सत्तानवे|अठ्यानवे|अट्ठानवे|निन्यानवे|सौ|हजार|हज़ार|लाख|करोड़|करोड़|सैकड़ा|दोन|पाच|सहा|नऊ|दहा|शंभर|कोटी|ಒಂದು|ಎರಡು|ಮೂರು|ನಾಲ್ಕು|ಐದು|ಆರು|ಏಳು|ಎಂಟು|ಒಂಬತ್ತು|ಹತ್ತು|ಇಪ್ಪತ್ತು|ಮೂವತ್ತು|ನಲವತ್ತು|ಐವತ್ತು|ಅರವತ್ತು|ಎಪ್ಪತ್ತು|ಎಂಭತ್ತು|ತೊಂಬತ್ತು|ನೂರು|ಸಾವಿರ|ಲಕ್ಷ|ಕೋಟಿ|ஒன்று|ஒன்னு|இரண்டு|ரெண்டு|மூன்று|மூணு|நான்கு|நாலு|ஐந்து|அஞ்சு|ஆறு|ஏழு|எட்டு|ஒன்பது|பத்து|இருபது|முப்பது|நாற்பது|ஐம்பது|அறுபது|எழுபது|எண்பது|தொண்ணூறு|நூறு|ஆயிரம்|லட்சம்|கோடி|ఒకటి|రెండు|మూడు|నాలుగు|ఐదు|ఆరు|ఏడు|ఎనిమిది|తొమ్మిది|పది|ఇరవై|ముప్పై|నలభై|యాభై|అరవై|డెబ్బై|ఎనభై|తొంభై|వంద|వేల|లక్ష|కోటి|ഒന്ന്|രണ്ട്|മൂന്ന്|നാല്|അഞ്ച്|ആറ്|ഏഴ്|എട്ട്|ഒമ്പത്|പത്ത്|ഇരുപത്|മുപ്പത്|നാൽപത്|അൻപത്|അറുപത്|എഴുപത്|എൺപത്|തൊണ്ണൂറ്|നൂറ്|ആയിരം|ലക്ഷം|കോടി|এক|দুই|তিন|চার|পাঁচ|ছয়|সাত|আট|নয়|দশ|বিশ|কুড়ি|ত্রিশ|চল্লিশ|পঞ্চাশ|ষাট|সত্তর|আশি|নব্বই|শত|হাজার|লাখ|লক্ষ|কোটি|એક|બે|ત્રણ|ચાર|પાંચ|છ|સાત|આઠ|નવ|દસ|વીસ|ત્રીસ|ચાલીસ|પચાસ|સાઇઠ|સિત્તેર|એસી|નેવું|સો|હજાર|લાખ|કરોડ|ਇੱਕ|ਦੋ|ਤਿੰਨ|ਚਾਰ|ਪੰਜ|ਛੇ|ਸੱਤ|ਅੱਠ|ਨੌ|ਦਸ|ਵੀਹ|ਤੀਹ|ਚਾਲੀ|ਪੰਜਾਹ|ਸੱਠ|ਸੱਤਰ|ਅੱਸੀ|ਨੱਬੇ|ਸੌ|ਹਜ਼ਾਰ|ਲੱਖ|ਕਰੋੜ)"
+# Deduplicate and sort by length descending to match longer strings first
+_all_indic_words_list = sorted(list(set(_all_indic_words_list)), key=len, reverse=True)
+_escaped_words = [re.escape(_w) for _w in _all_indic_words_list]
+
+_indic_words = r"(?:" + "|".join(_escaped_words) + r")"
 
 _digits = r"\b\d+(?:,\d+)*(?:\.\d+)?\b"
 
@@ -653,7 +668,7 @@ RegexPatternRegistry._register(
           | পাছৱৰ্ড
           | ᱯᱟᱥᱣᱟᱨᱰ
           | पासवर्ड
-        )\s*[:=]\s*
+        )\s*(?:[:=]|\s+)\s*
         (\S+)
     """,
     description="Password credential assignment syntax (password: secret).",

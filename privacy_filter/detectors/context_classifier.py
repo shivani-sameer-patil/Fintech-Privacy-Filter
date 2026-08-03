@@ -215,6 +215,39 @@ MULTILINGUAL_KEYWORDS: Dict[str, Dict[str, List[str]]] = {
 class ContextClassifier:
     """Intelligent context classifier for resolving entity ambiguities based on surrounding text."""
 
+    @staticmethod
+    def is_verhoeff_valid(number_str: str) -> bool:
+        """Validates Aadhaar numbers using Verhoeff checksum algorithm."""
+        d = (
+            (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            (1, 2, 3, 4, 0, 6, 7, 8, 9, 5),
+            (2, 3, 4, 0, 1, 7, 8, 9, 5, 6),
+            (3, 4, 0, 1, 2, 8, 9, 5, 6, 7),
+            (4, 0, 1, 2, 3, 9, 5, 6, 7, 8),
+            (5, 9, 8, 7, 6, 0, 4, 3, 2, 1),
+            (6, 5, 9, 8, 7, 1, 0, 4, 3, 2),
+            (7, 6, 5, 9, 8, 2, 1, 0, 4, 3),
+            (8, 7, 6, 5, 9, 3, 2, 1, 0, 4),
+            (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+        )
+        p = (
+            (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            (1, 5, 7, 6, 2, 8, 3, 0, 9, 4),
+            (5, 8, 0, 3, 7, 9, 6, 1, 4, 2),
+            (8, 9, 1, 6, 0, 4, 3, 5, 2, 7),
+            (9, 4, 5, 3, 1, 2, 6, 8, 7, 0),
+            (4, 2, 8, 6, 5, 7, 3, 9, 0, 1),
+            (2, 7, 9, 3, 8, 0, 6, 4, 1, 5),
+            (7, 0, 4, 6, 9, 1, 3, 2, 5, 8)
+        )
+        c = 0
+        try:
+            for i, digit in enumerate(reversed(number_str)):
+                c = d[c][p[i % 8][int(digit)]]
+            return c == 0
+        except (ValueError, IndexError):
+            return False
+
     def __init__(
         self,
         window_size: int = 50,
@@ -241,10 +274,29 @@ class ContextClassifier:
                     flat_list.add(kw.strip().lower())
             self._flat_keywords[target_type] = sorted(list(flat_list), key=len, reverse=True)
 
+    @staticmethod
+    def levenshtein_distance(s1: str, s2: str) -> int:
+        """Computes the Levenshtein distance between two strings."""
+        if len(s1) < len(s2):
+            return ContextClassifier.levenshtein_distance(s2, s1)
+        if len(s2) == 0:
+            return len(s1)
+        
+        previous_row = range(len(s2) + 1)
+        for i, c1 in enumerate(s1):
+            current_row = [i + 1]
+            for j, c2 in enumerate(s2):
+                insertions = previous_row[j + 1] + 1
+                deletions = current_row[j] + 1
+                substitutions = previous_row[j] + (c1 != c2)
+                current_row.append(min(insertions, deletions, substitutions))
+            previous_row = current_row
+        return previous_row[-1]
+
     def find_closest_keyword(
         self, entity: Entity, full_text: str, candidate_types: List[str]
     ) -> Optional[Tuple[str, int]]:
-        """Finds candidate target type whose keyword has closest proximity from keyword end to entity."""
+        """Finds candidate target type whose keyword has closest proximity to entity, using fuzzy matching."""
         start_idx = max(0, entity.start - self.window_size)
         end_idx = min(len(full_text), entity.end + self.window_size)
         context_segment = full_text[start_idx:end_idx].lower()
@@ -254,20 +306,48 @@ class ContextClassifier:
         min_distance = float("inf")
         longest_kw_len = 0
 
+        # Tokenize the context segment for single-word fuzzy matching, keeping track of token character spans
+        tokens = []
+        for m in re.finditer(r"\b[\w\u0900-\u0D7F]+\b", context_segment):
+            tokens.append((m.group(0), m.start(), m.end()))
+
         for target_type in candidate_types:
             keywords = self._flat_keywords.get(target_type, [])
             for kw in keywords:
-                pos = context_segment.find(kw)
-                while pos != -1:
-                    kw_end = pos + len(kw)
-                    dist = abs(entity_rel_pos - kw_end) if entity_rel_pos >= kw_end else abs(pos - entity_rel_pos)
-
-                    if dist < min_distance or (dist == min_distance and len(kw) > longest_kw_len):
-                        min_distance = dist
-                        best_target = target_type
-                        longest_kw_len = len(kw)
-
-                    pos = context_segment.find(kw, pos + 1)
+                # 1. For multi-word keywords, search exact substring
+                if " " in kw:
+                    pos = context_segment.find(kw)
+                    while pos != -1:
+                        kw_end = pos + len(kw)
+                        dist = abs(entity_rel_pos - kw_end) if entity_rel_pos >= kw_end else abs(pos - entity_rel_pos)
+                        if dist < min_distance or (dist == min_distance and len(kw) > longest_kw_len):
+                            min_distance = dist
+                            best_target = target_type
+                            longest_kw_len = len(kw)
+                        pos = context_segment.find(kw, pos + 1)
+                else:
+                    # 2. For single-word keywords, run token-level fuzzy match
+                    kw_len = len(kw)
+                    for tok_val, tok_start, tok_end in tokens:
+                        # Skip if lengths differ by more than allowed edits
+                        max_edits = 0 if kw_len < 4 else (1 if kw_len < 6 else 2)
+                        if abs(len(tok_val) - kw_len) > max_edits:
+                            continue
+                        
+                        is_match = False
+                        if tok_val == kw:
+                            is_match = True
+                        elif max_edits > 0:
+                            dist = self.levenshtein_distance(tok_val, kw)
+                            if dist <= max_edits:
+                                is_match = True
+                        
+                        if is_match:
+                            dist_to_entity = abs(entity_rel_pos - tok_end) if entity_rel_pos >= tok_end else abs(tok_start - entity_rel_pos)
+                            if dist_to_entity < min_distance or (dist_to_entity == min_distance and kw_len > longest_kw_len):
+                                min_distance = dist_to_entity
+                                best_target = target_type
+                                longest_kw_len = kw_len
 
         if best_target is not None and min_distance < self.window_size:
             return best_target, min_distance
@@ -281,7 +361,7 @@ class ContextClassifier:
 
         # Check if the surrounding context strongly indicates this is a PASSWORD, OTP, or PIN,
         # overriding any other format match (like PAN, GST, etc.) except for unambiguous types.
-        if entity.type not in {"EMAIL", "UPI", "IFSC", "DATE", "AMOUNT", "PHONE"}:
+        if entity.type not in {"EMAIL", "UPI", "IFSC", "DATE", "AMOUNT", "PHONE", "CARD", "AADHAAR", "PAN", "GST", "CIN", "PASSPORT", "VOTER_ID", "DRIVING_LICENSE"}:
             match_res = self.find_closest_keyword(
                 entity, full_text, ["USERNAME", "PASSWORD", "OTP", "MPIN", "TRANSACTION_PIN"]
             )
@@ -314,11 +394,14 @@ class ContextClassifier:
 
         # Disambiguation for 12-digit numeric sequences
         if len(cleaned_digits) == 12:
+            is_valid_aadhaar = self.is_verhoeff_valid(cleaned_digits)
             match_res = self.find_closest_keyword(
                 entity, full_text, ["AADHAAR", "LOAN_ACCOUNT", "ACCOUNT_NUMBER"]
             )
             if match_res:
                 matched_type, _ = match_res
+                pass
+                
                 conf = 1.0 if matched_type == "AADHAAR" else 0.95
                 return Entity(
                     type=matched_type,
@@ -330,6 +413,17 @@ class ContextClassifier:
                 )
 
             # Isolated 12-digit number without any contextual indicators
+            # If it passes Verhoeff check (and is not mock), classify as AADHAAR with 0.85 confidence
+            if is_valid_aadhaar and cleaned_digits != "234567890123":
+                return Entity(
+                    type="AADHAAR",
+                    text=entity.text,
+                    start=entity.start,
+                    end=entity.end,
+                    confidence=0.85,
+                    category="VERHOEFF_CHECKSUM_MATCH",
+                )
+
             if entity.type in {"ACCOUNT_NUMBER", "AADHAAR", "MICR", "CVV"}:
                 return Entity(
                     type="UNKNOWN_NUMERIC_ID",

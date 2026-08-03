@@ -66,6 +66,39 @@ class RegexDetector:
         self.min_confidence = min_confidence
 
     @staticmethod
+    def is_verhoeff_valid(number_str: str) -> bool:
+        """Validates Aadhaar numbers using Verhoeff checksum algorithm."""
+        d = (
+            (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            (1, 2, 3, 4, 0, 6, 7, 8, 9, 5),
+            (2, 3, 4, 0, 1, 7, 8, 9, 5, 6),
+            (3, 4, 0, 1, 2, 8, 9, 5, 6, 7),
+            (4, 0, 1, 2, 3, 9, 5, 6, 7, 8),
+            (5, 9, 8, 7, 6, 0, 4, 3, 2, 1),
+            (6, 5, 9, 8, 7, 1, 0, 4, 3, 2),
+            (7, 6, 5, 9, 8, 2, 1, 0, 4, 3),
+            (8, 7, 6, 5, 9, 3, 2, 1, 0, 4),
+            (9, 8, 7, 6, 5, 4, 3, 2, 1, 0)
+        )
+        p = (
+            (0, 1, 2, 3, 4, 5, 6, 7, 8, 9),
+            (1, 5, 7, 6, 2, 8, 3, 0, 9, 4),
+            (5, 8, 0, 3, 7, 9, 6, 1, 4, 2),
+            (8, 9, 1, 6, 0, 4, 3, 5, 2, 7),
+            (9, 4, 5, 3, 1, 2, 6, 8, 7, 0),
+            (4, 2, 8, 6, 5, 7, 3, 9, 0, 1),
+            (2, 7, 9, 3, 8, 0, 6, 4, 1, 5),
+            (7, 0, 4, 6, 9, 1, 3, 2, 5, 8)
+        )
+        c = 0
+        try:
+            for i, digit in enumerate(reversed(number_str)):
+                c = d[c][p[i % 8][int(digit)]]
+            return c == 0
+        except (ValueError, IndexError):
+            return False
+
+    @staticmethod
     def is_luhn_valid(card_number_str: str) -> bool:
         """Validates credit/debit card numbers using Luhn checksum algorithm."""
         digits = [int(ch) for ch in card_number_str if ch.isdigit()]
@@ -134,6 +167,10 @@ class RegexDetector:
                     cleaned_card = "".join(c for c in matched_text if c.isdigit())
                     if not self.is_luhn_valid(cleaned_card):
                         confidence = 0.70  # Format matched but failed Luhn checksum
+                elif entity_type == EntityType.AADHAAR:
+                    cleaned_aadhaar = "".join(c for c in matched_text if c.isdigit())
+                    if not self.is_verhoeff_valid(cleaned_aadhaar):
+                        confidence = 0.60  # Format matched but failed Verhoeff checksum
 
 
                 if confidence >= self.min_confidence:

@@ -182,6 +182,58 @@
       </div>
     </div>
 
+    <!-- Performance Telemetry & Latency Breakdown -->
+    <div class="telemetry-section glass-panel">
+      <div class="card-header">
+        <h2>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          System Performance & Latency Telemetry
+        </h2>
+        <span class="badge badge-telemetry">Active Monitoring</span>
+      </div>
+      <div class="telemetry-grid">
+        <div class="pipeline-flow">
+          <h3>Visual Pipeline Flow</h3>
+          <div class="pipeline-steps">
+            <div class="step-badge active" id="step-lang">1. Lang Detect</div>
+            <div class="arrow">➔</div>
+            <div class="step-badge active" id="step-norm">2. Indic Norm</div>
+            <div class="arrow">➔</div>
+            <div class="step-badge active" id="step-parallel">3. Parallel Detect</div>
+            <div class="arrow">➔</div>
+            <div class="step-badge active" id="step-context">4. Context Engine</div>
+            <div class="arrow">➔</div>
+            <div class="step-badge active" id="step-merge">5. Merger</div>
+            <div class="arrow">➔</div>
+            <div class="step-badge active" id="step-mask">6. Masker</div>
+          </div>
+        </div>
+        <div class="detector-breakdown">
+          <h3>Detector Latency Breakdown</h3>
+          <div class="breakdown-item">
+            <div class="breakdown-lbl">Regex Engine</div>
+            <div class="progress-bar-container"><div class="progress-bar" id="bar-regex" style="width: 0%"></div></div>
+            <span class="breakdown-val" id="val-regex">0 ms</span>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-lbl">Microsoft Presidio</div>
+            <div class="progress-bar-container"><div class="progress-bar" id="bar-presidio" style="width: 0%"></div></div>
+            <span class="breakdown-val" id="val-presidio">0 ms</span>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-lbl">spaCy Model (Hybrid NER)</div>
+            <div class="progress-bar-container"><div class="progress-bar" id="bar-spacy" style="width: 0%"></div></div>
+            <span class="breakdown-val" id="val-spacy">0 ms</span>
+          </div>
+          <div class="breakdown-item">
+            <div class="breakdown-lbl">Multilingual Keyword Engine</div>
+            <div class="progress-bar-container"><div class="progress-bar" id="bar-keyword" style="width: 0%"></div></div>
+            <span class="breakdown-val" id="val-keyword">0 ms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Detected Entities Audit Table -->
     <div class="audit-section glass-panel">
       <div class="card-header">

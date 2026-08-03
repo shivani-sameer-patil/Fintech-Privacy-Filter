@@ -835,9 +835,30 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
   }
 
   function renderResults(data) {
-    metricLatency.textContent = `${data.processing_time_ms} ms`;
+    metricLatency.textContent = `${data.processing_time_ms.toFixed(2)} ms`;
     metricLang.textContent = `${data.language.language_name} (${data.language.language_code})`;
     metricCount.textContent = data.entities_masked_count;
+
+    // Update Telemetry Progress Bars
+    const lats = data.detector_latencies || { regex: 0, presidio: 0, spacy: 0, keyword: 0 };
+    const regexLat = lats.regex || 0;
+    const presidioLat = lats.presidio || 0;
+    const spacyLat = lats.spacy || 0;
+    const keywordLat = lats.keyword || 0;
+
+    const maxLat = Math.max(regexLat, presidioLat, spacyLat, keywordLat, 1);
+
+    document.getElementById("bar-regex").style.width = `${(regexLat / maxLat) * 100}%`;
+    document.getElementById("val-regex").textContent = `${regexLat.toFixed(2)} ms`;
+
+    document.getElementById("bar-presidio").style.width = `${(presidioLat / maxLat) * 100}%`;
+    document.getElementById("val-presidio").textContent = `${presidioLat.toFixed(2)} ms`;
+
+    document.getElementById("bar-spacy").style.width = `${(spacyLat / maxLat) * 100}%`;
+    document.getElementById("val-spacy").textContent = `${spacyLat.toFixed(2)} ms`;
+
+    document.getElementById("bar-keyword").style.width = `${(keywordLat / maxLat) * 100}%`;
+    document.getElementById("val-keyword").textContent = `${keywordLat.toFixed(2)} ms`;
 
     let formattedText = escapeHtml(data.masked_text);
 

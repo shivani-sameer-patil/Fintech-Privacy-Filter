@@ -41,9 +41,9 @@ class TestMasker(unittest.TestCase):
         ]
 
         res = self.masker.mask(text, entities)
-        expected = "Contact [PERSON] at [EMAIL] or [PHONE_NUMBER]."
+        expected = "Contact Shivani Patil at [EMAIL] or [PHONE_NUMBER]."
         self.assertEqual(res.masked_text, expected)
-        self.assertEqual(res.entities_masked, 3)
+        self.assertEqual(res.entities_masked, 2)
 
     def test_right_to_left_offset_preservation(self):
         text = "PAN ABCDE1234F and Aadhaar 2345 6789 0123"

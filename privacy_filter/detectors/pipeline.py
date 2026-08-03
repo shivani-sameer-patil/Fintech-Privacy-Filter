@@ -7,6 +7,7 @@ Input -> Language Detection -> Indic Normalization -> Regex Detection -> Presidi
 """
 
 import time
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional
 
@@ -47,6 +48,7 @@ class PipelineOutput:
     entities_masked_count: int
     entity_counts: Dict[str, int]
     processing_time_ms: float
+    detector_latencies: Dict[str, float] = field(default_factory=dict)
 
     def to_dict(self) -> Dict[str, Any]:
         """Returns complete pipeline results as a serializable dictionary."""
@@ -59,7 +61,16 @@ class PipelineOutput:
             "entities_masked_count": self.entities_masked_count,
             "entity_counts": self.entity_counts,
             "processing_time_ms": round(self.processing_time_ms, 2),
+            "detector_latencies": {k: round(v, 2) for k, v in self.detector_latencies.items()},
         }
+
+
+def _run_timed_detector(detector_func, *args, **kwargs):
+    """Executes a detector function and returns its results along with wall-clock latency in milliseconds."""
+    start = time.perf_counter()
+    result = detector_func(*args, **kwargs)
+    latency_ms = (time.perf_counter() - start) * 1000.0
+    return result, latency_ms
 
 
 class FinTechPrivacyPipeline:
@@ -121,6 +132,7 @@ class FinTechPrivacyPipeline:
 
         self.merger = EntityMerger()
         self.masker = Masker(tag_mapping=self.config.tag_mapping)
+        self.executor = ThreadPoolExecutor(max_workers=4)
 
     def process(self, text: str) -> PipelineOutput:
         """Executes the master 10-step FinTech privacy filtering pipeline.
@@ -148,6 +160,7 @@ class FinTechPrivacyPipeline:
                 entities_masked_count=0,
                 entity_counts={},
                 processing_time_ms=0.0,
+                detector_latencies={},
             )
 
         # ---------------------------------------------------------------------
@@ -171,36 +184,50 @@ class FinTechPrivacyPipeline:
         # ---------------------------------------------------------------------
         # Step 3, 4, 5: Parallel Detector Engine Executions
         # ---------------------------------------------------------------------
-        regex_entities: List[Entity] = (
-            self.regex_detector.detect(normalized_text)
-            if self.regex_detector
-            else []
-        )
+        futures = {}
 
-        presidio_entities: List[Entity] = (
-            self.presidio_detector.detect(normalized_text, language=language_res.language_code)
-            if self.presidio_detector and self.presidio_detector.is_available and language_res.language_code == "en"
-            else []
-        )
+        if self.regex_detector:
+            futures["regex"] = self.executor.submit(
+                _run_timed_detector, self.regex_detector.detect, normalized_text
+            )
 
-        spacy_entities: List[Entity] = (
-            self.spacy_detector.detect(normalized_text)
-            if self.spacy_detector and self.spacy_detector.is_available and language_res.language_code == "en"
-            else []
-        )
+        if self.presidio_detector and self.presidio_detector.is_available and language_res.language_code == "en":
+            futures["presidio"] = self.executor.submit(
+                _run_timed_detector, self.presidio_detector.detect, normalized_text, language=language_res.language_code
+            )
 
-        keyword_entities: List[Entity] = (
-            self.keyword_detector.detect(normalized_text)
-            if self.keyword_detector
-            else []
-        )
+        if self.spacy_detector:
+            futures["spacy"] = self.executor.submit(
+                _run_timed_detector, self.spacy_detector.detect, normalized_text
+            )
+
+        if self.keyword_detector:
+            futures["keyword"] = self.executor.submit(
+                _run_timed_detector, self.keyword_detector.detect, normalized_text
+            )
+
+        regex_entities, regex_time = futures["regex"].result() if "regex" in futures else ([], 0.0)
+        presidio_entities, presidio_time = futures["presidio"].result() if "presidio" in futures else ([], 0.0)
+        spacy_entities, spacy_time = futures["spacy"].result() if "spacy" in futures else ([], 0.0)
+        keyword_entities, keyword_time = futures["keyword"].result() if "keyword" in futures else ([], 0.0)
+
+        detector_latencies = {
+            "regex": regex_time,
+            "presidio": presidio_time,
+            "spacy": spacy_time,
+            "keyword": keyword_time,
+        }
 
         # ---------------------------------------------------------------------
         # Step 6: Context Classification & Disambiguation
         # ---------------------------------------------------------------------
         all_candidate_entities = regex_entities + presidio_entities + spacy_entities + keyword_entities
         if language_res.language_code != "en":
-            all_candidate_entities = [e for e in all_candidate_entities if e.type != "PERSON"]
+            # Keep PERSON entities in non-English text only if they were matched by the hybrid name detector
+            all_candidate_entities = [
+                e for e in all_candidate_entities 
+                if e.type != "PERSON" or e.category == "HYBRID_NAME_REGEX"
+            ]
 
         if self.context_classifier and all_candidate_entities:
             classified_entities = self.context_classifier.classify_all(
@@ -235,4 +262,5 @@ class FinTechPrivacyPipeline:
             entities_masked_count=mask_res.entities_masked,
             entity_counts=mask_res.entity_counts,
             processing_time_ms=elapsed_ms,
+            detector_latencies=detector_latencies,
         )
