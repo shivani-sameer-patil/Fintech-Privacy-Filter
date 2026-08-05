@@ -35,11 +35,11 @@ The privacy filter employs a modular 10-step hybrid detection pipeline:
 
 ```
            Input
-             ↓
+            ↓
      Language Detection
-             ↓
+            ↓
   Indic Numeral Normalization
-             ↓
+            ↓
  ┌──────────────────────────────────────────────┐
  │               PARALLEL DETECT                │
  │  ┌──────────┐ ┌──────────┐ ┌───────┐ ┌─────┐ │
