@@ -114,3 +114,6 @@ node_modules/
 # OS-specific files
 .DS_Store
 Thumbs.db
+
+# Large model weights
+privacy_filter/detectors/finetuned_gliner/

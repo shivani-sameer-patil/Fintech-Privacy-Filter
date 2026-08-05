@@ -1,0 +1,16 @@
+{
+  "configuration": {
+    "dataset_path": "C:\\Users\\SIMRAN\\Downloads\\gold_standard_fintech_200.jsonl",
+    "limit": null,
+    "total_documents_processed": 200,
+    "execution_time_seconds": 279.56
+  },
+  "overall_metrics": {
+    "True Positives": 1836,
+    "False Positives": 400,
+    "False Negatives": 764,
+    "Precision": 0.8211,
+    "Recall": 0.7062,
+    "F1-Score": 0.7593
+  }
+}

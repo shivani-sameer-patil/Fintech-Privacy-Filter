@@ -151,11 +151,6 @@ MULTILINGUAL_KEYWORDS: Dict[str, Dict[str, List[str]]] = {
         "or": ["ଏମଆଇସିଆର"],
         "ur": ["ایم آئی سی آر"],
     },
-    "IFSC": {
-        "en": ["ifsc code", "ifsc", "indian financial system code"],
-        "hi": ["आईएफएससी", "आईएफएससी कोड"],
-        "kn": ["ಐಎಫ್ಎಸ್ಸಿ", "ಐಎಫ್ಎಸ್ಸಿ ಕೋಡ್"],
-    },
     "PHONE": {
         "en": ["phone", "mobile", "call", "contact", "number", "ph", "mob", "telephone", "cell", "no", "dial", "register"],
         "hi": ["फ़ोन", "मोबाइल", "नंबर", "संपर्क", "फोन", "दूरभाष"],
@@ -198,18 +193,173 @@ MULTILINGUAL_KEYWORDS: Dict[str, Dict[str, List[str]]] = {
         "or": ["ଉପଭୋକ୍ତା ନାମ"],
         "ur": ["صارف का नाम"],
     },
-    "CARD": {
-        "en": ["card number", "credit card", "debit card", "card no", "visa", "mastercard", "rupay", "amex"],
-        "hi": ["कार्ड", "क्रेडिट कार्ड", "डेबिट कार्ड"],
-    },
-    "CVV": {
-        "en": ["cvv", "cvc", "security code", "cvv2", "cvc2"],
-        "hi": ["सीवीवी", "सुरक्षा कोड"],
-    },
-    "UPI": {
-        "en": ["upi", "vpa", "upi id", "pay payment address"],
-        "hi": ["यूपीआई", "यूपीआई आईडी"],
-    },
+    "IFSC": {
+    "en": [
+      "ifsc", "ifsc code", "bank ifsc", "branch code", "bank branch code"
+    ],
+    "hi": [
+      "आईएफएससी", "आईएफएससी कोड", "बैंक आईएफएससी", "शाखा कोड"
+    ],
+    "kn": [
+      "ಐಎಫ್‌ಎಸ್‌ಸಿ", "ಐಎಫ್‌ಎಸ್‌ಸಿ ಕೋಡ್", "ಬ್ಯಾಂಕ್ ಐಎಫ್‌ಎಸ್‌ಸಿ", "ಶಾಖೆ ಕೋಡ್"
+    ],
+    "ta": [
+      "ஐஎஃப்எஸ்சி", "ஐஎஃப்எஸ்சி குறியீடு", "வங்கி ஐஎஃப்எஸ்சி", "கிளை குறியீடு"
+    ],
+    "te": [
+      "ఐఎఫ్‌ఎస్‌సి", "ఐఎఫ్‌ఎస్‌సి కోడ్", "బ్యాంక్ ఐఎఫ్‌ఎస్‌సి", "శాఖ కోడ్"
+    ],
+    "ml": [
+      "ഐഎഫ്എസ്‌സി", "ഐഎഫ്എസ്‌സി കോഡ്", "ബാങ്ക് ഐഎഫ്എസ്‌സി", "ശാഖ കോഡ്"
+    ],
+    "bn": [
+      "আইএফএসসি", "আইএফএসসি কোড", "ব্যাংকের আইএফএসসি", "শাখা কোড"
+    ],
+    "gu": [
+      "આઈએફએસસી", "આઈએફએસસી કોડ", "બેંક આઈએફએસસી", "શાખા કોડ"
+    ],
+    "mr": [
+      "आयएफएससी", "आयएफएससी कोड", "बँक आयएफएससी", "शाखा कोड"
+    ],
+    "pa": [
+      "ਆਈਐਫਐੱਸਸੀ", "ਆਈਐਫਐੱਸਸੀ ਕੋਡ", "ਬੈਂਕ ਆਈਐਫਐੱਸਸੀ", "ਸ਼ਾਖਾ ਕੋਡ"
+    ],
+    "or": [
+      "ଆଇଏଫଏସସି", "ଆଇଏଫଏସସି କୋଡ୍", "ବ୍ୟାଙ୍କ ଆଇଏଫଏସସି", "ଶାଖା କୋଡ୍"
+    ],
+    "ur": [
+      "آئی ایف ایس سی", "آئی ایف ایس سی کوڈ", "بینک آئی ایف ایس سی", "برانچ کوڈ"
+    ],
+    "as": [
+      "আইএফএছচি", "আইএফএছচি ক'ড", "বেংকৰ আইএফএছচি", "শাখা ক'ড"
+    ]
+  },
+
+  "CARD": {
+    "en": [
+      "card", "card number", "debit card", "credit card", "atm card", "visa card", "mastercard", "rupay card"
+    ],
+    "hi": [
+      "कार्ड", "कार्ड नंबर", "डेबिट कार्ड", "क्रेडिट कार्ड", "एटीएम कार्ड"
+    ],
+    "kn": [
+      "ಕಾರ್ಡ್", "ಕಾರ್ಡ್ ಸಂಖ್ಯೆ", "ಡೆಬಿಟ್ ಕಾರ್ಡ್", "ಕ್ರೆಡಿಟ್ ಕಾರ್ಡ್", "ಎಟಿಎಂ ಕಾರ್ಡ್"
+    ],
+    "ta": [
+      "கார்டு", "கார்டு எண்", "டெபிட் கார்டு", "கிரெடிட் கார்டு", "ஏடிஎம் கார்டு"
+    ],
+    "te": [
+      "కార్డ్", "కార్డ్ నంబర్", "డెబిట్ కార్డ్", "క్రెడిట్ కార్డ్", "ఏటీఎం కార్డ్"
+    ],
+    "ml": [
+      "കാർഡ്", "കാർഡ് നമ്പർ", "ഡെബിറ്റ് കാർഡ്", "ക്രെഡിറ്റ് കാർഡ്", "എടിഎം കാർഡ്"
+    ],
+    "bn": [
+      "কার্ড", "কার্ড নম্বর", "ডেবিট কার্ড", "ক্রেডিট কার্ড", "এটিএম কার্ড"
+    ],
+    "gu": [
+      "કાર્ડ", "કાર્ડ નંબર", "ડેબિટ કાર્ડ", "ક્રેડિટ કાર્ડ", "એટીએમ કાર્ડ"
+    ],
+    "mr": [
+      "कार्ड", "कार्ड क्रमांक", "डेबिट कार्ड", "क्रेडिट कार्ड", "एटीएम कार्ड"
+    ],
+    "pa": [
+      "ਕਾਰਡ", "ਕਾਰਡ ਨੰਬਰ", "ਡੈਬਿਟ ਕਾਰਡ", "ਕ੍ਰੈਡਿਟ ਕਾਰਡ", "ਏਟੀਐਮ ਕਾਰਡ"
+    ],
+    "or": [
+      "କାର୍ଡ", "କାର୍ଡ ନମ୍ବର", "ଡେବିଟ୍ କାର୍ଡ", "କ୍ରେଡିଟ୍ କାର୍ଡ", "ଏଟିଏମ୍ କାର୍ଡ"
+    ],
+    "ur": [
+      "کارڈ", "کارڈ نمبر", "ڈیبٹ کارڈ", "کریڈٹ کارڈ", "اے ٹی ایم کارڈ"
+    ],
+    "as": [
+      "কাৰ্ড", "কাৰ্ড নম্বৰ", "ডেবিট কাৰ্ড", "ক্ৰেডিট কাৰ্ড", "এটিএম কাৰ্ড"
+    ]
+  },
+
+  "CVV": {
+    "en": [
+      "cvv", "cvv number", "cvv code", "security code", "card security code", "card verification value", "cvc"
+    ],
+    "hi": [
+      "सीवीवी", "सीवीवी नंबर", "सुरक्षा कोड", "कार्ड सुरक्षा कोड"
+    ],
+    "kn": [
+      "ಸಿವಿವಿ", "ಸಿವಿವಿ ಸಂಖ್ಯೆ", "ಭದ್ರತಾ ಕೋಡ್", "ಕಾರ್ಡ್ ಭದ್ರತಾ ಕೋಡ್"
+    ],
+    "ta": [
+      "சிவிவி", "சிவிவி எண்", "பாதுகாப்பு குறியீடு", "கார்டு பாதுகாப்பு குறியீடு"
+    ],
+    "te": [
+      "సీవీవీ", "సీవీవీ నంబర్", "భద్రతా కోడ్", "కార్డ్ భద్రతా కోడ్"
+    ],
+    "ml": [
+      "സിവിവി", "സിവിവി നമ്പർ", "സുരക്ഷാ കോഡ്", "കാർഡ് സുരക്ഷാ കോഡ്"
+    ],
+    "bn": [
+      "সিভিভি", "সিভিভি নম্বর", "নিরাপত্তা কোড", "কার্ড নিরাপত্তা কোড"
+    ],
+    "gu": [
+      "સીવીવી", "સીવીવી નંબર", "સુરક્ષા કોડ", "કાર્ડ સુરક્ષા કોડ"
+    ],
+    "mr": [
+      "सीव्हीव्ही", "सीव्हीव्ही क्रमांक", "सुरक्षा कोड", "कार्ड सुरक्षा कोड"
+    ],
+    "pa": [
+      "ਸੀਵੀਵੀ", "ਸੀਵੀਵੀ ਨੰਬਰ", "ਸੁਰੱਖਿਆ ਕੋਡ", "ਕਾਰਡ ਸੁਰੱਖਿਆ ਕੋਡ"
+    ],
+    "or": [
+      "ସିଭିଭି", "ସିଭିଭି ନମ୍ବର", "ସୁରକ୍ଷା କୋଡ୍", "କାର୍ଡ ସୁରକ୍ଷା କୋଡ୍"
+    ],
+    "ur": [
+      "سی وی وی", "سی وی وی نمبر", "سیکیورٹی کوڈ", "کارڈ سیکیورٹی کوڈ"
+    ],
+    "as": [
+      "চিভিভি", "চিভিভি নম্বৰ", "নিৰাপত্তা ক'ড", "কাৰ্ড সুৰক্ষা ক'ড"
+    ]
+  },
+
+  "UPI": {
+    "en": [
+      "upi", "upi id", "upi address", "virtual payment address", "vpa", "upi handle", "payment handle"
+    ],
+    "hi": [
+      "यूपीआई", "यूपीआई आईडी", "यूपीआई पता", "वीपीए", "वर्चुअल पेमेंट पता"
+    ],
+    "kn": [
+      "ಯುಪಿಐ", "ಯುಪಿಐ ಐಡಿ", "ಯುಪಿಐ ವಿಳಾಸ", "ವಿಪಿಎ", "ವರ್ಚುವಲ್ ಪಾವತಿ ವಿಳಾಸ"
+    ],
+    "ta": [
+      "யுபிஐ", "யுபிஐ ஐடி", "யுபிஐ முகவரி", "விபிஏ", "மெய்நிகர் கட்டண முகவரி"
+    ],
+    "te": [
+      "యూపీఐ", "యూపీఐ ఐడి", "యూపీఐ చిరునామా", "వీపీఏ", "వర్చువల్ పేమెంట్ అడ్రస్"
+    ],
+    "ml": [
+      "യുപിഐ", "യുപിഐ ഐഡി", "യുപിഐ വിലാസം", "വിഎപിഎ", "വെർച്വൽ പേയ്മെന്റ് വിലാസം"
+    ],
+    "bn": [
+      "ইউপিআই", "ইউপিআই আইডি", "ইউপিআই ঠিকানা", "ভিপিএ", "ভার্চুয়াল পেমেন্ট ঠিকানা"
+    ],
+    "gu": [
+      "યુપીઆઈ", "યુપીઆઈ આઈડી", "યુપીઆઈ સરનામું", "વીપીએ", "વર્ચ્યુઅલ પેમેન્ટ સરનામું"
+    ],
+    "mr": [
+      "यूपीआय", "यूपीआय आयडी", "यूपीआय पत्ता", "व्हीपीए", "आभासी पेमेंट पत्ता"
+    ],
+    "pa": [
+      "ਯੂਪੀਆਈ", "ਯੂਪੀਆਈ ਆਈਡੀ", "ਯੂਪੀਆਈ ਪਤਾ", "ਵੀਪੀਏ", "ਵਰਚੁਅਲ ਭੁਗਤਾਨ ਪਤਾ"
+    ],
+    "or": [
+      "ୟୁପିଆଇ", "ୟୁପିଆଇ ଆଇଡି", "ୟୁପିଆଇ ଠିକଣା", "ଭିପିଏ", "ଭର୍ଚୁଆଲ ପେମେଣ୍ଟ ଠିକଣା"
+    ],
+    "ur": [
+      "یو پی آئی", "یو پی آئی آئی ڈی", "یو پی آئی پتہ", "وی پی اے", "ورچوئل پیمنٹ ایڈریس"
+    ],
+    "as": [
+      "ইউপিআই", "ইউপিআই আইডি", "ইউপিআই ঠিকনা", "ভিপিএ", "ভাৰ্চুৱেল পেমেণ্ট ঠিকনা"
+    ]
+  }
 }
 
 
@@ -269,18 +419,9 @@ class ContextClassifier:
         self._flat_keywords: Dict[str, List[str]] = {}
         self._build_flat_keyword_map()
 
-        self.llm_execution_time_ms = 0.0
-
         # Lazy initialize LLM Client if enabled
         self.llm_client = None
-        if self.config and getattr(self.config, "enable_llm_classifier", False):
-            from privacy_filter.detectors.llm_client import LLMClassifierClient
-            self.llm_client = LLMClassifierClient(
-                provider=self.config.llm_provider,
-                model_name=self.config.llm_model_name,
-                api_url=self.config.llm_api_url,
-                timeout=self.config.llm_timeout_seconds,
-            )
+        self.llm_execution_time_ms = 0.0
 
     def _build_flat_keyword_map(self) -> None:
         """Flattens multilingual keyword definitions into lower-case search lists."""
@@ -371,81 +512,7 @@ class ContextClassifier:
 
         return None
 
-    def _classify_with_llm(
-        self, entity: Entity, full_text: str, candidate_types: List[str]
-    ) -> Optional[Entity]:
-        """Invokes local LLM to resolve ambiguous context using zero-shot classification."""
-        if not self.llm_client:
-            return None
 
-        # Build context segment around the entity and highlight it
-        start_idx = max(0, entity.start - self.window_size)
-        end_idx = min(len(full_text), entity.end + self.window_size)
-        context_window = (
-            full_text[start_idx:entity.start] +
-            f" <candidate>{entity.text}</candidate> " +
-            full_text[entity.end:end_idx]
-        ).strip()
-
-        type_descriptions = {
-            "AADHAAR": "12-digit Indian national identity card number (UID / Aadhaar / आधार)",
-            "ACCOUNT_NUMBER": "Bank account number (savings, checking, deposit, etc.)",
-            "LOAN_ACCOUNT": "Loan account number (mortgage, personal loan, credit line)",
-            "PHONE": "10-digit telephone / mobile phone number",
-            "UNKNOWN_NUMERIC_ID": "Generic unidentified sequence of digits"
-        }
-
-        type_options_list = []
-        for t in candidate_types:
-            desc = type_descriptions.get(t, "")
-            type_options_list.append(f'- "{t}": {desc}')
-        type_options_list.append(f'- "UNKNOWN_NUMERIC_ID": {type_descriptions["UNKNOWN_NUMERIC_ID"]}')
-
-        type_options = "\n".join(type_options_list)
-
-        prompt = f"""You are a PII classification system. Your task is to map the candidate entity wrapped in <candidate>...</candidate> tags in the Context Segment to the most appropriate category type from the list below based on its surrounding context words.
-
-Guidelines:
-- Look at the words closest to <candidate>...</candidate> in the Context Segment to determine its type. Do not confuse it with other numbers mentioned in the same segment.
-- If the candidate is a 12-digit sequence of numbers and is described by or near words like "national identity card", "UID", "Aadhaar", "आधार", or "ಆಧಾರ್", classify it as "AADHAAR".
-- If the candidate is described by or near words like "bank account", "savings account", "checking account", "खाता", "खाते", "ಖಾತೆ", "ಖಾತೆ ಸಂಖ್ಯೆ", "खाते क्रमांक", or near terms like "bank", "IFSC", "बैंक", classify it as "ACCOUNT_NUMBER".
-- If the candidate is described by or near words like "loan", "lending", "mortgage", "ऋण", or "ಸಾಲ", classify it as "LOAN_ACCOUNT".
-- If the candidate is a 10-digit phone number, classify it as "PHONE".
-
-Context Segment: "{context_window}"
-
-Target Category Types:
-{type_options}
-
-Respond ONLY with a JSON object in this format:
-{{
-  "disambiguated_type": "...",
-  "confidence": 0.0 to 1.0,
-  "reasoning": "brief explanation"
-}}"""
-
-        try:
-            start_llm = time.perf_counter()
-            res_json = self.llm_client.generate_json(prompt)
-            duration_ms = (time.perf_counter() - start_llm) * 1000.0
-            self.llm_execution_time_ms += duration_ms
-
-            if res_json and isinstance(res_json, dict):
-                disambiguated_type = res_json.get("disambiguated_type")
-                confidence = res_json.get("confidence", 0.5)
-                
-                if disambiguated_type in candidate_types or disambiguated_type == "UNKNOWN_NUMERIC_ID":
-                    return Entity(
-                        type=disambiguated_type,
-                        text=entity.text,
-                        start=entity.start,
-                        end=entity.end,
-                        confidence=confidence,
-                        category=f"LLM_DISAMBIGUATED_{self.llm_client.provider.upper()}",
-                    )
-        except Exception:
-            pass
-        return None
 
     def classify_entity(self, entity: Entity, full_text: str) -> Entity:
         """Analyzes context surrounding entity using proximity scoring to resolve type ambiguity."""
@@ -488,13 +555,6 @@ Respond ONLY with a JSON object in this format:
         # Disambiguation for 12-digit numeric sequences
         if len(cleaned_digits) == 12:
             is_valid_aadhaar = self.is_verhoeff_valid(cleaned_digits)
-            if self.llm_client:
-                llm_entity = self._classify_with_llm(
-                    entity, full_text, ["AADHAAR", "LOAN_ACCOUNT", "ACCOUNT_NUMBER"]
-                )
-                if llm_entity:
-                    return llm_entity
-
             match_res = self.find_closest_keyword(
                 entity, full_text, ["AADHAAR", "LOAN_ACCOUNT", "ACCOUNT_NUMBER"]
             )
@@ -511,6 +571,8 @@ Respond ONLY with a JSON object in this format:
                     confidence=conf,
                     category="CONTEXT_DISAMBIGUATED",
                 )
+
+
 
             # Isolated 12-digit number without any contextual indicators
             # If it passes Verhoeff check (and is not mock), classify as AADHAAR with 0.85 confidence
@@ -536,13 +598,6 @@ Respond ONLY with a JSON object in this format:
 
         # Disambiguation for 10-digit numeric sequences (PHONE vs ACCOUNT_NUMBER)
         elif len(cleaned_digits) == 10:
-            if self.llm_client:
-                llm_entity = self._classify_with_llm(
-                    entity, full_text, ["PHONE", "ACCOUNT_NUMBER"]
-                )
-                if llm_entity:
-                    return llm_entity
-
             match_res = self.find_closest_keyword(
                 entity, full_text, ["PHONE", "ACCOUNT_NUMBER"]
             )
@@ -557,6 +612,7 @@ Respond ONLY with a JSON object in this format:
                     confidence=conf,
                     category="CONTEXT_DISAMBIGUATED",
                 )
+
 
             if entity.text.strip().startswith("+91"):
                 return entity
@@ -640,7 +696,8 @@ Respond ONLY with a JSON object in this format:
                         start=e.start,
                         end=e.start + len(trimmed),
                         confidence=e.confidence,
-                        category=e.category
+                        category=e.category,
+                        contributing_sources=list(e.contributing_sources or [e.category])
                     )
 
             # 2. Filter out false positive NLP detections for common technical / layout / frequency keywords
@@ -661,5 +718,10 @@ Respond ONLY with a JSON object in this format:
                 digits_count = sum(c.isdigit() for c in clean)
                 if digits_count != 10:
                     continue
-            classified_entities.append(self.classify_entity(e, full_text))
+            res = self.classify_entity(e, full_text)
+            if res is not e:
+                res.contributing_sources = list(e.contributing_sources or [e.category])
+                if res.category and res.category not in res.contributing_sources:
+                    res.contributing_sources.append(res.category)
+            classified_entities.append(res)
         return classified_entities

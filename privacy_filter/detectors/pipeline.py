@@ -24,7 +24,7 @@ from privacy_filter.detectors.presidio_detector import PresidioDetector
 from privacy_filter.detectors.regex_detector import Entity, RegexDetector
 from privacy_filter.detectors.spacy_detector import SpacyDetector
 from privacy_filter.detectors.multilingual_keyword_detector import MultilingualKeywordDetector
-from privacy_filter.detectors.llm_detector import LLMDetector
+from privacy_filter.detectors.gliner_detector import GlinerDetector
 
 
 @dataclass
@@ -116,6 +116,15 @@ class FinTechPrivacyPipeline:
             else None
         )
 
+        self.gliner_detector = (
+            GlinerDetector(
+                model_name=self.config.gliner_model_name,
+                threshold=self.config.gliner_threshold,
+            )
+            if getattr(self.config, "enable_gliner_detection", True)
+            else None
+        )
+
         self.context_classifier = (
             ContextClassifier(
                 window_size=self.config.context_window_size,
@@ -124,8 +133,6 @@ class FinTechPrivacyPipeline:
             if self.config.enable_context_classification
             else None
         )
-        if self.context_classifier:
-            self.context_classifier.llm_client = None
 
         self.keyword_detector = (
             MultilingualKeywordDetector(
@@ -133,12 +140,6 @@ class FinTechPrivacyPipeline:
                 min_confidence=self.config.keyword_detection_threshold,
             )
             if self.config.enable_keyword_detection
-            else None
-        )
-
-        self.llm_detector = (
-            LLMDetector(config=self.config)
-            if self.config.enable_llm_classifier
             else None
         )
 
@@ -218,23 +219,23 @@ class FinTechPrivacyPipeline:
                 _run_timed_detector, self.keyword_detector.detect, normalized_text
             )
 
-        if self.llm_detector:
-            futures["llm"] = self.executor.submit(
-                _run_timed_detector, self.llm_detector.detect, normalized_text
+        if self.gliner_detector:
+            futures["gliner"] = self.executor.submit(
+                _run_timed_detector, self.gliner_detector.detect, normalized_text
             )
 
         regex_entities, regex_time = futures["regex"].result() if "regex" in futures else ([], 0.0)
         presidio_entities, presidio_time = futures["presidio"].result() if "presidio" in futures else ([], 0.0)
         spacy_entities, spacy_time = futures["spacy"].result() if "spacy" in futures else ([], 0.0)
         keyword_entities, keyword_time = futures["keyword"].result() if "keyword" in futures else ([], 0.0)
-        llm_entities, llm_time = futures["llm"].result() if "llm" in futures else ([], 0.0)
+        gliner_entities, gliner_time = futures["gliner"].result() if "gliner" in futures else ([], 0.0)
 
 
 
         # ---------------------------------------------------------------------
         # Step 6: Context Classification & Disambiguation
         # ---------------------------------------------------------------------
-        all_candidate_entities = regex_entities + presidio_entities + spacy_entities + keyword_entities + llm_entities
+        all_candidate_entities = regex_entities + presidio_entities + spacy_entities + keyword_entities + gliner_entities
         if language_res.language_code != "en":
             # Keep PERSON entities in non-English text only if they were matched by the hybrid name detector
             all_candidate_entities = [
@@ -267,16 +268,12 @@ class FinTechPrivacyPipeline:
         # ---------------------------------------------------------------------
         elapsed_ms = (time.perf_counter() - start_time) * 1000.0
 
-        llm_time = 0.0
-        if self.context_classifier:
-            llm_time = getattr(self.context_classifier, "llm_execution_time_ms", 0.0)
-
         detector_latencies = {
             "regex": regex_time,
             "presidio": presidio_time,
             "spacy": spacy_time,
             "keyword": keyword_time,
-            "llm": llm_time,
+            "gliner": gliner_time,
         }
 
         return PipelineOutput(

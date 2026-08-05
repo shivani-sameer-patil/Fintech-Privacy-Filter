@@ -840,14 +840,14 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
     metricCount.textContent = data.entities_masked_count;
 
     // Update Telemetry Progress Bars
-    const lats = data.detector_latencies || { regex: 0, presidio: 0, spacy: 0, keyword: 0, llm: 0 };
+    const lats = data.detector_latencies || { regex: 0, presidio: 0, spacy: 0, keyword: 0, gliner: 0 };
     const regexLat = lats.regex || 0;
     const presidioLat = lats.presidio || 0;
     const spacyLat = lats.spacy || 0;
     const keywordLat = lats.keyword || 0;
-    const llmLat = lats.llm || 0;
+    const glinerLat = lats.gliner || 0;
 
-    const maxLat = Math.max(regexLat, presidioLat, spacyLat, keywordLat, llmLat, 1);
+    const maxLat = Math.max(regexLat, presidioLat, spacyLat, keywordLat, glinerLat, 1);
 
     document.getElementById("bar-regex").style.width = `${(regexLat / maxLat) * 100}%`;
     document.getElementById("val-regex").textContent = `${regexLat.toFixed(2)} ms`;
@@ -861,8 +861,8 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
     document.getElementById("bar-keyword").style.width = `${(keywordLat / maxLat) * 100}%`;
     document.getElementById("val-keyword").textContent = `${keywordLat.toFixed(2)} ms`;
 
-    document.getElementById("bar-llm").style.width = `${(llmLat / maxLat) * 100}%`;
-    document.getElementById("val-llm").textContent = `${llmLat.toFixed(2)} ms`;
+    document.getElementById("bar-gliner").style.width = `${(glinerLat / maxLat) * 100}%`;
+    document.getElementById("val-gliner").textContent = `${glinerLat.toFixed(2)} ms`;
 
     let formattedText = escapeHtml(data.masked_text);
 
@@ -913,13 +913,53 @@ PAN Card Code: ABCDE1234F, Aadhaar Number: 2345 6789 0123.`,
 
     let rowsHtml = "";
     data.detected_entities.forEach((ent, index) => {
+      let displayCat = "ENSEMBLE_DETECTOR";
+      
+      function mapSourceLabel(category) {
+        if (!category) return null;
+        const cat = category.toUpperCase();
+        if (cat.includes("REGEX") || 
+            cat === "PERSONAL" || 
+            cat === "BANK" || 
+            cat === "TAX_CORPORATE" || 
+            cat === "FINANCIAL" || 
+            cat === "SECURITY_SYSTEM" ||
+            cat === "CONTEXT_DISAMBIGUATED" ||
+            cat === "VERHOEFF_CHECKSUM_MATCH" ||
+            cat === "ISOLATED_NUMERIC") {
+          return "REGEX";
+        }
+        if (cat.includes("SPACY") || cat.includes("HYBRID_NAME")) return "SPACY";
+        if (cat.includes("PRESIDIO")) return "PRESIDIO";
+        if (cat.includes("KEYWORD")) return "KEYWORDS";
+        if (cat.includes("GLINER")) return "GLINER";
+        return category.toUpperCase();
+      }
+
+      const sourcesList = [];
+      if (ent.contributing_sources && ent.contributing_sources.length > 0) {
+        ent.contributing_sources.forEach(src => {
+          const mapped = mapSourceLabel(src);
+          if (mapped && !sourcesList.includes(mapped)) {
+            sourcesList.push(mapped);
+          }
+        });
+      } else if (ent.category) {
+        const mapped = mapSourceLabel(ent.category);
+        if (mapped) sourcesList.push(mapped);
+      }
+
+      if (sourcesList.length > 0) {
+        displayCat = sourcesList.slice(0, 2).join(", ");
+      }
+
       rowsHtml += `
         <tr>
           <td><strong style="color: #a5b4fc;">${escapeHtml(ent.type)}</strong></td>
           <td><code>${escapeHtml(ent.text)}</code></td>
           <td>[${ent.start}, ${ent.end}]</td>
           <td><span class="conf-pill">${(ent.confidence * 100).toFixed(0)}%</span></td>
-          <td>${escapeHtml(ent.category || "ENSEMBLE_DETECTOR")}</td>
+          <td>${escapeHtml(displayCat)}</td>
           <td style="text-align: center;">
             <input type="checkbox" class="correct-checkbox" checked data-index="${index}" style="cursor: pointer; width: 18px; height: 18px;">
           </td>

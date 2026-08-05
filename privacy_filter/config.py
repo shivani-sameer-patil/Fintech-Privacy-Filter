@@ -31,12 +31,10 @@ class PipelineConfig:
     context_window_size: int = 60
     keyword_detection_threshold: float = 0.6
 
-    # Local LLM Classifier Parameters
-    enable_llm_classifier: bool = True
-    llm_provider: str = "ollama"
-    llm_api_url: str = "http://localhost:11434/api/generate"
-    llm_model_name: str = "qwen2.5:1.5b"
-    llm_timeout_seconds: float = 15.0
+    # GLiNER Detector Parameters
+    enable_gliner_detection: bool = True
+    gliner_model_name: str = "c:/Users/SIMRAN/Desktop/New/privacy_filter/detectors/finetuned_gliner"
+    gliner_threshold: float = 0.5
 
     # Custom Semantic Tag Mappings
     tag_mapping: Dict[str, str] = field(default_factory=lambda: dict(DEFAULT_TAG_MAPPING))

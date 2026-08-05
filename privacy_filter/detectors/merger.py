@@ -110,8 +110,19 @@ class EntityMerger:
         unique_map: dict[tuple[int, int, str], Entity] = {}
         for entity in all_candidates:
             key = (entity.start, entity.end, entity.type)
-            if key not in unique_map or entity.confidence > unique_map[key].confidence:
+            if key not in unique_map:
+                # Ensure contributing_sources is a copy to prevent in-place mutation of references
+                entity.contributing_sources = list(entity.contributing_sources or [entity.category])
                 unique_map[key] = entity
+            else:
+                # Merge sources
+                for src in (entity.contributing_sources or [entity.category]):
+                    if src not in unique_map[key].contributing_sources:
+                        unique_map[key].contributing_sources.append(src)
+                if entity.confidence > unique_map[key].confidence:
+                    prev_sources = unique_map[key].contributing_sources
+                    unique_map[key] = entity
+                    unique_map[key].contributing_sources = prev_sources
 
         candidates = list(unique_map.values())
 
@@ -135,11 +146,21 @@ class EntityMerger:
                 if self._is_overlapping(candidate, existing):
                     overlap_found = True
                     # Check if candidate replaces existing entity
-                    if not self._should_keep_first(existing, candidate):
+                    if self._should_keep_first(existing, candidate):
+                        # Merge candidate's sources into existing
+                        for src in (candidate.contributing_sources or [candidate.category]):
+                            if src not in existing.contributing_sources:
+                                existing.contributing_sources.append(src)
+                    else:
+                        # Replace existing with candidate, merging existing's sources into candidate
+                        for src in (existing.contributing_sources or [existing.category]):
+                            if src not in candidate.contributing_sources:
+                                candidate.contributing_sources.append(src)
                         merged_entities[idx] = candidate
                     break
 
             if not overlap_found:
+                candidate.contributing_sources = list(candidate.contributing_sources or [candidate.category])
                 merged_entities.append(candidate)
 
         # Re-sort final non-overlapping entities by start index

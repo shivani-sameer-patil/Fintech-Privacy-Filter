@@ -5,7 +5,7 @@ Scans input text using compiled regex pattern definitions from regex_patterns.py
 validates matches (e.g., Luhn checksum for cards), and returns standardized Entity objects.
 """
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Optional, Set
 
 from privacy_filter.detectors.regex_patterns import (
@@ -33,6 +33,11 @@ class Entity:
     end: int
     confidence: float = 1.0
     category: Optional[str] = None
+    contributing_sources: List[str] = field(default_factory=list)
+
+    def __post_init__(self):
+        if not self.contributing_sources and self.category:
+            self.contributing_sources = [self.category]
 
     def to_dict(self) -> Dict[str, Any]:
         """Returns entity in standard dictionary format as specified in schema."""
@@ -42,6 +47,8 @@ class Entity:
             "start": self.start,
             "end": self.end,
             "confidence": self.confidence,
+            "category": self.category,
+            "contributing_sources": self.contributing_sources,
         }
 
 
