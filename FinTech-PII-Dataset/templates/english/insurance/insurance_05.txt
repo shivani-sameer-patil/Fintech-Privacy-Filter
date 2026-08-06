@@ -1,0 +1,11 @@
+CLAIM DETAILS
+
+Policy Holder : {PERSON}
+
+Policy Number : {APPLICATION_ID}
+
+Claim Amount : {AMOUNT}
+
+Contact Number : {PHONE}
+
+Email : {EMAIL}

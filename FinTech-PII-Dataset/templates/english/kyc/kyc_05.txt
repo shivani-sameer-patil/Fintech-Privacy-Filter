@@ -1,0 +1,33 @@
+ONLINE KYC PORTAL
+
+Applicant Name
+
+{PERSON}
+
+Date of Birth
+
+{DATE}
+
+Registered Mobile
+
+{PHONE}
+
+Registered Email
+
+{EMAIL}
+
+UPI Handle
+
+{UPI}
+
+Account Number
+
+{BANK_ACCOUNT}
+
+IFSC
+
+{IFSC}
+
+Income
+
+{AMOUNT}

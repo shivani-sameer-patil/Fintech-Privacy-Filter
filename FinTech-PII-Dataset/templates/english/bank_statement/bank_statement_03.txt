@@ -1,0 +1,13 @@
+BANK TRANSACTION REPORT
+
+Account Holder : {PERSON}
+
+Account Number : {BANK_ACCOUNT}
+
+Reference Number : {APPLICATION_ID}
+
+Transaction Date : {DATE}
+
+Transaction Amount : {AMOUNT}
+
+Current Balance : {AMOUNT}

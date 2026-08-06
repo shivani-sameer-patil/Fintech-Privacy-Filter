@@ -1,0 +1,1 @@
+{PERSON} holds Savings Account {BANK_ACCOUNT} with IFSC {IFSC}. On {DATE}, a transaction of {AMOUNT} was recorded. The available account balance after the transaction is {AMOUNT}. The account is linked to UPI ID {UPI}.

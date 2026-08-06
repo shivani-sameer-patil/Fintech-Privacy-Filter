@@ -1,0 +1,13 @@
+TRANSACTION DETAILS
+
+Name : {PERSON}
+
+Account : {BANK_ACCOUNT}
+
+Transaction Reference : {APPLICATION_ID}
+
+Date : {DATE}
+
+Amount : {AMOUNT}
+
+Available Balance : {AMOUNT}

@@ -1,0 +1,11 @@
+POLICY SUMMARY
+
+Name : {PERSON}
+
+Policy Number : {APPLICATION_ID}
+
+Premium : {AMOUNT}
+
+Start Date : {DATE}
+
+Email : {EMAIL}

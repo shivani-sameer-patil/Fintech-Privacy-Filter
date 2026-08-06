@@ -1,0 +1,10 @@
+Subject: Monthly Account Statement
+
+Dear {PERSON},
+
+Your monthly bank statement for Account Number {BANK_ACCOUNT} is now available.
+
+If you notice any unauthorized transactions, please contact us immediately.
+
+Regards,
+Banking Team

@@ -1,0 +1,19 @@
+BRANCH KYC VERIFICATION
+
+Customer Name : {PERSON}
+
+DOB : {DATE}
+
+Gender : {GENDER}
+
+Passport Number : {PASSPORT}
+
+Driving Licence : {DRIVING_LICENSE}
+
+Phone : {PHONE}
+
+Email : {EMAIL}
+
+PAN : {PAN}
+
+Status : VERIFIED

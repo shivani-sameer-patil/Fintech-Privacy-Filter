@@ -1,0 +1,1 @@
+Dear Customer, your account XX{BANK_ACCOUNT} has been credited with {AMOUNT} on {DATE}. Available balance is {AMOUNT}. Ref: {APPLICATION_ID}.

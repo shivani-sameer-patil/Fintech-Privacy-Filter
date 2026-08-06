@@ -1,0 +1,9 @@
+Subject: Security Alert
+
+Dear {PERSON},
+
+A login was detected for your banking account on {DATE}.
+
+Registered Mobile: {PHONE}
+
+If this activity was not performed by you, please secure your account immediately.

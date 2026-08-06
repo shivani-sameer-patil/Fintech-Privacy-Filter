@@ -1,0 +1,17 @@
+LOAN ACCOUNT SUMMARY
+
+Borrower : {PERSON}
+
+Loan Account Number : {LOAN_ACCOUNT}
+
+Mobile Number : {PHONE}
+
+Email Address : {EMAIL}
+
+Outstanding Loan : {LOAN_AMOUNT}
+
+Monthly EMI : {EMI}
+
+Interest : {INTEREST_RATE}
+
+Loan Duration : {TENURE}

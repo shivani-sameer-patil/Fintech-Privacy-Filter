@@ -1,0 +1,1 @@
+{PERSON} purchased an insurance policy with policy number {APPLICATION_ID}. The premium amount is {AMOUNT}. The registered phone number is {PHONE}, email is {EMAIL}, and PAN number is {PAN}. The policy becomes effective from {DATE}.

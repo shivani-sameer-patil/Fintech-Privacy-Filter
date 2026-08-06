@@ -1,0 +1,20 @@
+Subject: Loan Application Approved
+
+Dear {PERSON},
+
+Congratulations!
+
+Your loan application {APPLICATION_ID} has been approved.
+
+Loan Account Number: {LOAN_ACCOUNT}
+
+Approved Amount: {LOAN_AMOUNT}
+
+Interest Rate: {INTEREST_RATE}
+
+Loan Tenure: {TENURE}
+
+Monthly EMI: {EMI}
+
+Regards,
+Loan Processing Team

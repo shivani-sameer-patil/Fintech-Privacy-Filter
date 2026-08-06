@@ -1,0 +1,13 @@
+ವಿಷಯ: ಸಾಲ ವಿವರ
+
+ಗ್ರಾಹಕ : {PERSON}
+
+ಸಾಲ ಖಾತೆ : {LOAN_ACCOUNT}
+
+ಸಾಲದ ಮೊತ್ತ : {LOAN_AMOUNT}
+
+ಇಎಂಐ : {EMI}
+
+ಬಡ್ಡಿದರ : {INTEREST_RATE}
+
+ಅವಧಿ : {TENURE}

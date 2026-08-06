@@ -1,0 +1,27 @@
+KYC VERIFICATION FORM
+
+Customer Name : {PERSON}
+
+Gender : {GENDER}
+
+Date of Birth : {DATE}
+
+Phone Number : {PHONE}
+
+Email Address : {EMAIL}
+
+PAN Number : {PAN}
+
+Aadhaar Number : {AADHAAR}
+
+Passport Number : {PASSPORT}
+
+Driving Licence : {DRIVING_LICENSE}
+
+Bank Account Number : {BANK_ACCOUNT}
+
+IFSC Code : {IFSC}
+
+UPI ID : {UPI}
+
+Declared Annual Income : {AMOUNT}

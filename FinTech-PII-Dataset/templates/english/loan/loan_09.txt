@@ -1,0 +1,15 @@
+EMI REPAYMENT DETAILS
+
+Customer : {PERSON}
+
+Loan Account : {LOAN_ACCOUNT}
+
+Monthly EMI : {EMI}
+
+Interest Rate : {INTEREST_RATE}
+
+Loan Tenure : {TENURE}
+
+Registered Phone : {PHONE}
+
+Registered Email : {EMAIL}

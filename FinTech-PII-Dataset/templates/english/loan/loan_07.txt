@@ -1,0 +1,19 @@
+LOAN SANCTION LETTER
+
+Customer Name : {PERSON}
+
+Loan Account : {LOAN_ACCOUNT}
+
+Customer ID : {CUSTOMER_ID}
+
+Approved Amount : {LOAN_AMOUNT}
+
+Rate of Interest : {INTEREST_RATE}
+
+Loan Period : {TENURE}
+
+Monthly EMI : {EMI}
+
+Employer : {EMPLOYER}
+
+Designation : {DESIGNATION}

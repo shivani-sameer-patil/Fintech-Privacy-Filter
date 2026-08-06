@@ -1,0 +1,25 @@
+VEHICLE LOAN REQUEST
+
+Loan Account : {LOAN_ACCOUNT}
+
+Customer Name : {PERSON}
+
+Customer ID : {CUSTOMER_ID}
+
+Phone : {PHONE}
+
+Email : {EMAIL}
+
+Driving Licence : {DRIVING_LICENSE}
+
+Employer : {EMPLOYER}
+
+Monthly Salary : {SALARY}
+
+Requested Loan : {LOAN_AMOUNT}
+
+Interest Rate : {INTEREST_RATE}
+
+EMI : {EMI}
+
+Repayment Period : {TENURE}

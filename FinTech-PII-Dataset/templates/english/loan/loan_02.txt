@@ -1,0 +1,29 @@
+HOME LOAN APPLICATION
+
+Application Number : {APPLICATION_ID}
+
+Applicant : {PERSON}
+
+Customer ID : {CUSTOMER_ID}
+
+Contact Number : {PHONE}
+
+Email : {EMAIL}
+
+PAN : {PAN}
+
+Aadhaar : {AADHAAR}
+
+Employer Name : {EMPLOYER}
+
+Occupation : {DESIGNATION}
+
+Annual Income : {SALARY}
+
+Loan Amount Applied : {LOAN_AMOUNT}
+
+Loan Tenure : {TENURE}
+
+Applicable Interest : {INTEREST_RATE}
+
+Expected EMI : {EMI}

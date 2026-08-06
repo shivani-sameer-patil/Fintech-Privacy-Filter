@@ -1,0 +1,25 @@
+बैंक ऋण सत्यापन प्रपत्र
+
+नाम : {PERSON}
+
+मोबाइल : {PHONE}
+
+ई-मेल : {EMAIL}
+
+पैन : {PAN}
+
+आधार : {AADHAAR}
+
+बैंक खाता : {BANK_ACCOUNT}
+
+आईएफएससी : {IFSC}
+
+कंपनी : {EMPLOYER}
+
+पदनाम : {DESIGNATION}
+
+मासिक वेतन : {SALARY}
+
+ऋण राशि : {LOAN_AMOUNT}
+
+स्थिति : सत्यापित

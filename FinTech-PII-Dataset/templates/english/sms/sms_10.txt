@@ -1,0 +1,1 @@
+Balance Alert: Your Savings A/c XX{BANK_ACCOUNT} has an available balance of {AMOUNT} as of {DATE}.

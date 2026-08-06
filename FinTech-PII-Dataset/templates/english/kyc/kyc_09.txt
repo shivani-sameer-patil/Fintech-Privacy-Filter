@@ -1,0 +1,19 @@
+CUSTOMER COMPLIANCE REPORT
+
+Customer : {PERSON}
+
+Date of Verification : {DATE}
+
+Verified Identity Documents
+
+PAN : {PAN}
+
+Passport : {PASSPORT}
+
+Driving Licence : {DRIVING_LICENSE}
+
+Registered Account : {BANK_ACCOUNT}
+
+IFSC : {IFSC}
+
+Result : SUCCESS

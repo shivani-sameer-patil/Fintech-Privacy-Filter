@@ -1,0 +1,9 @@
+INSURANCE APPROVAL
+
+Dear {PERSON},
+
+Your insurance application has been approved.
+
+Policy Number : {APPLICATION_ID}
+
+Premium Amount : {AMOUNT}

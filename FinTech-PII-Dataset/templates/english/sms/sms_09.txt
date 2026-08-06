@@ -1,0 +1,1 @@
+Dear {PERSON}, your KYC is pending. Kindly update your PAN {PAN} and Aadhaar {AADHAAR} before {DATE} to avoid service interruption.

@@ -1,0 +1,1 @@
+Reminder: EMI of {EMI} for Loan A/c {LOAN_ACCOUNT} is due today. Kindly ensure sufficient balance.

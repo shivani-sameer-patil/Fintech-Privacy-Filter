@@ -1,0 +1,25 @@
+EDUCATION LOAN APPLICATION
+
+Application ID : {APPLICATION_ID}
+
+Applicant Name : {PERSON}
+
+Date of Birth : {DATE}
+
+PAN Card : {PAN}
+
+Passport Number : {PASSPORT}
+
+Phone Number : {PHONE}
+
+Email Address : {EMAIL}
+
+Parent / Employer : {EMPLOYER}
+
+Declared Income : {SALARY}
+
+Loan Amount : {LOAN_AMOUNT}
+
+Loan Duration : {TENURE}
+
+Interest : {INTEREST_RATE}

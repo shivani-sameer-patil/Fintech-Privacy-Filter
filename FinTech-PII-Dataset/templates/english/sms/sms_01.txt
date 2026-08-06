@@ -1,0 +1,1 @@
+Dear {PERSON}, your A/c XX{BANK_ACCOUNT} has been debited by {AMOUNT} on {DATE}. Available balance: {AMOUNT}. Ref No: {APPLICATION_ID}.

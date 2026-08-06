@@ -1,0 +1,13 @@
+ACCOUNT ACTIVITY
+
+Customer : {PERSON}
+
+Phone : {PHONE}
+
+Account : {BANK_ACCOUNT}
+
+UPI ID : {UPI}
+
+Transaction Amount : {AMOUNT}
+
+Available Balance : {AMOUNT}

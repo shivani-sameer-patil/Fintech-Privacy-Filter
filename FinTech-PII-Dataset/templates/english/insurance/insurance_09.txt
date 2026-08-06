@@ -1,0 +1,11 @@
+POLICY INFORMATION
+
+Customer Name : {PERSON}
+
+PAN : {PAN}
+
+Aadhaar : {AADHAAR}
+
+Policy Number : {APPLICATION_ID}
+
+Coverage : {AMOUNT}

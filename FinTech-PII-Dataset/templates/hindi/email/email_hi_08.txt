@@ -1,0 +1,13 @@
+विषय: ऋण विवरण
+
+ग्राहक : {PERSON}
+
+ऋण खाता : {LOAN_ACCOUNT}
+
+ऋण राशि : {LOAN_AMOUNT}
+
+ईएमआई : {EMI}
+
+ब्याज दर : {INTEREST_RATE}
+
+ऋण अवधि : {TENURE}

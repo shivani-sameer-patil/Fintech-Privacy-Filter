@@ -1,0 +1,9 @@
+Subject: Transaction Successful
+
+Dear {PERSON},
+
+A transaction of {AMOUNT} has been processed successfully from Account {BANK_ACCOUNT} on {DATE}.
+
+Reference Number: {APPLICATION_ID}
+
+Thank you for banking with us.

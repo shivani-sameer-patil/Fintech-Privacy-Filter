@@ -1,0 +1,14 @@
+Subject: Complete Your KYC Verification
+
+Dear {PERSON},
+
+Our records indicate that your KYC verification is pending.
+
+Please update your PAN {PAN} and Aadhaar {AADHAAR} before {DATE}.
+
+Registered Mobile: {PHONE}
+
+Registered Email: {EMAIL}
+
+Thank you,
+Customer Support Team

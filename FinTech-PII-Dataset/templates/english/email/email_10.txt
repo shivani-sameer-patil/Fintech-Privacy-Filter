@@ -1,0 +1,12 @@
+Subject: Policy Renewal Reminder
+
+Dear {PERSON},
+
+Your insurance policy is due for renewal.
+
+Premium Amount: {AMOUNT}
+
+Please complete the renewal before {DATE} to continue uninterrupted coverage.
+
+Regards,
+Insurance Team

@@ -1,0 +1,25 @@
+CUSTOMER APPLICATION FORM
+
+Application Number : APP-{CHEQUE_NUMBER}
+
+Full Name : {PERSON}
+
+Gender : {GENDER}
+
+Date of Birth : {DATE}
+
+Mobile Number : {PHONE}
+
+Email Address : {EMAIL}
+
+PAN Number : {PAN}
+
+Aadhaar Number : {AADHAAR}
+
+Bank Account Number : {BANK_ACCOUNT}
+
+IFSC Code : {IFSC}
+
+UPI ID : {UPI}
+
+Annual Income : {AMOUNT}

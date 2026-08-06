@@ -1,0 +1,1 @@
+UPI Alert: {AMOUNT} paid successfully to UPI ID {UPI} from A/c XX{BANK_ACCOUNT} on {DATE}. UPI Ref: {APPLICATION_ID}.

@@ -1,0 +1,11 @@
+PASSBOOK ENTRY
+
+Name : {PERSON}
+
+Account Number : {BANK_ACCOUNT}
+
+Date : {DATE}
+
+Credit : {AMOUNT}
+
+Closing Balance : {AMOUNT}

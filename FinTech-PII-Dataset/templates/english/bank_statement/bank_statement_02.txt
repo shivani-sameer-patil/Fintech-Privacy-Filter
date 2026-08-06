@@ -1,0 +1,11 @@
+SAVINGS ACCOUNT STATEMENT
+
+Name : {PERSON}
+
+Account : {BANK_ACCOUNT}
+
+Transaction Date : {DATE}
+
+Debit Amount : {AMOUNT}
+
+Closing Balance : {AMOUNT}

@@ -1,0 +1,10 @@
+Subject: EMI Due Reminder
+
+Dear {PERSON},
+
+This is a reminder that your EMI of {EMI} for Loan Account {LOAN_ACCOUNT} is due on {DATE}.
+
+Please ensure sufficient balance in your account.
+
+Regards,
+Loan Department

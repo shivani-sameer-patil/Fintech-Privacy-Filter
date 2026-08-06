@@ -1,0 +1,1 @@
+Transaction of {AMOUNT} from A/c XX{BANK_ACCOUNT} on {DATE} has failed. Ref No: {APPLICATION_ID}. If not initiated by you, contact customer care.

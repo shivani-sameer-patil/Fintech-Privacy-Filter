@@ -1,0 +1,33 @@
+ऋण ग्राहक विवरण
+
+ग्राहक का नाम : {PERSON}
+
+ग्राहक आईडी : {CUSTOMER_ID}
+
+मोबाइल नंबर : {PHONE}
+
+ई-मेल : {EMAIL}
+
+पैन संख्या : {PAN}
+
+आधार संख्या : {AADHAAR}
+
+ऋण खाता संख्या : {LOAN_ACCOUNT}
+
+ऋण राशि : {LOAN_AMOUNT}
+
+ईएमआई : {EMI}
+
+ब्याज दर : {INTEREST_RATE}
+
+ऋण अवधि : {TENURE}
+
+नियोजक : {EMPLOYER}
+
+पदनाम : {DESIGNATION}
+
+मासिक वेतन : {SALARY}
+
+बैंक खाता : {BANK_ACCOUNT}
+
+आईएफएससी : {IFSC}

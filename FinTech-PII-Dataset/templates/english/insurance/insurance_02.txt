@@ -1,0 +1,11 @@
+LIFE INSURANCE
+
+Customer Name : {PERSON}
+
+Policy Number : {APPLICATION_ID}
+
+Monthly Premium : {AMOUNT}
+
+Registered Mobile : {PHONE}
+
+Registered Email : {EMAIL}

@@ -1,0 +1,11 @@
+VEHICLE INSURANCE
+
+Customer : {PERSON}
+
+Policy ID : {APPLICATION_ID}
+
+Premium : {AMOUNT}
+
+Driving Licence : {DRIVING_LICENSE}
+
+Contact : {PHONE}

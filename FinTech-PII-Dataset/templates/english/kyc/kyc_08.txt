@@ -1,0 +1,21 @@
+KYC DOCUMENT CHECKLIST
+
+☑ PAN Received
+
+☑ Aadhaar Verified
+
+☑ Mobile Verified
+
+☑ Email Verified
+
+Applicant : {PERSON}
+
+Mobile : {PHONE}
+
+Email : {EMAIL}
+
+PAN : {PAN}
+
+Aadhaar : {AADHAAR}
+
+Verification Status : APPROVED

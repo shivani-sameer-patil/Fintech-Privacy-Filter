@@ -1,0 +1,21 @@
+ऋण आवेदन सारांश
+
+आवेदन संख्या : {APPLICATION_ID}
+
+ग्राहक आईडी : {CUSTOMER_ID}
+
+आवेदक : {PERSON}
+
+मोबाइल : {PHONE}
+
+ई-मेल : {EMAIL}
+
+नियोजक : {EMPLOYER}
+
+पद : {DESIGNATION}
+
+वेतन : {SALARY}
+
+अनुरोधित ऋण : {LOAN_AMOUNT}
+
+स्थिति : प्रक्रिया में

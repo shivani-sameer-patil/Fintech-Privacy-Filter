@@ -1,0 +1,7 @@
+Subject: Payment Confirmation
+
+Dear {PERSON},
+
+Your payment of {AMOUNT} towards your credit card has been received successfully.
+
+Thank you for choosing our services.

@@ -1,0 +1,37 @@
+व्यक्तिगत ऋण आवेदन विवरण
+
+आवेदक का नाम : {PERSON}
+
+आवेदन संख्या : {APPLICATION_ID}
+
+ग्राहक आईडी : {CUSTOMER_ID}
+
+मोबाइल नंबर : {PHONE}
+
+ई-मेल पता : {EMAIL}
+
+पैन कार्ड : {PAN}
+
+आधार कार्ड : {AADHAAR}
+
+नियोजक संस्था : {EMPLOYER}
+
+पद : {DESIGNATION}
+
+मासिक आय : {SALARY}
+
+अनुरोधित ऋण राशि : {LOAN_AMOUNT}
+
+ब्याज दर : {INTEREST_RATE}
+
+ऋण अवधि : {TENURE}
+
+मासिक किस्त (EMI) : {EMI}
+
+ऋण खाता संख्या : {LOAN_ACCOUNT}
+
+बैंक खाता : {BANK_ACCOUNT}
+
+आईएफएससी : {IFSC}
+
+स्थिति : स्वीकृत

@@ -1,0 +1,19 @@
+CUSTOMER PROFILE
+
+Name : {PERSON}
+
+Gender : {GENDER}
+
+Phone : {PHONE}
+
+Email : {EMAIL}
+
+PAN Card : {PAN}
+
+Passport : {PASSPORT}
+
+Savings Account : {BANK_ACCOUNT}
+
+UPI : {UPI}
+
+Income : {AMOUNT}

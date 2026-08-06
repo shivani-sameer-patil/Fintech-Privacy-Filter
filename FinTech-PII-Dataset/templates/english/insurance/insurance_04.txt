@@ -1,0 +1,9 @@
+INSURANCE RENEWAL NOTICE
+
+Dear {PERSON},
+
+Your insurance policy {APPLICATION_ID} is due for renewal.
+
+Premium Due : {AMOUNT}
+
+Renew Before : {DATE}

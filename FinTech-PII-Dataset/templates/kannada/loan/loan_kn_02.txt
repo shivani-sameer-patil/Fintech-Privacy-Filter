@@ -1,0 +1,37 @@
+ವೈಯಕ್ತಿಕ ಸಾಲ ಅರ್ಜಿ ವಿವರ
+
+ಅರ್ಜಿದಾರರ ಹೆಸರು : {PERSON}
+
+ಅರ್ಜಿಯ ಸಂಖ್ಯೆ : {APPLICATION_ID}
+
+ಗ್ರಾಹಕ ಐಡಿ : {CUSTOMER_ID}
+
+ಮೊಬೈಲ್ : {PHONE}
+
+ಇ-ಮೇಲ್ : {EMAIL}
+
+ಪ್ಯಾನ್ : {PAN}
+
+ಆಧಾರ್ : {AADHAAR}
+
+ಉದ್ಯೋಗದಾತ : {EMPLOYER}
+
+ಹುದ್ದೆ : {DESIGNATION}
+
+ಮಾಸಿಕ ವೇತನ : {SALARY}
+
+ಕೋರಿದ ಸಾಲದ ಮೊತ್ತ : {LOAN_AMOUNT}
+
+ಬಡ್ಡಿದರ : {INTEREST_RATE}
+
+ಸಾಲದ ಅವಧಿ : {TENURE}
+
+ಮಾಸಿಕ ಇಎಂಐ : {EMI}
+
+ಸಾಲ ಖಾತೆ : {LOAN_ACCOUNT}
+
+ಬ್ಯಾಂಕ್ ಖಾತೆ : {BANK_ACCOUNT}
+
+ಐಎಫ್‌ಎಸ್‌ಸಿ : {IFSC}
+
+ಸ್ಥಿತಿ : ಮಂಜೂರು

@@ -1,0 +1,21 @@
+Dear {PERSON},
+
+We are pleased to inform you that your Know Your Customer (KYC) verification has been completed successfully.
+
+Verified PAN Number : {PAN}
+
+Verified Aadhaar Number : {AADHAAR}
+
+Registered Mobile : {PHONE}
+
+Registered Email : {EMAIL}
+
+Primary Bank Account : {BANK_ACCOUNT}
+
+IFSC Code : {IFSC}
+
+Declared Annual Income : {AMOUNT}
+
+Thank you for banking with us.
+
+Compliance Department

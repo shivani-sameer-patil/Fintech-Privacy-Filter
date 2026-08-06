@@ -1,0 +1,23 @@
+BUSINESS LOAN APPLICATION
+
+Customer ID : {CUSTOMER_ID}
+
+Business Owner : {PERSON}
+
+PAN : {PAN}
+
+Application Reference : {APPLICATION_ID}
+
+Phone : {PHONE}
+
+Email : {EMAIL}
+
+Business Name : {EMPLOYER}
+
+Requested Amount : {LOAN_AMOUNT}
+
+Interest Rate : {INTEREST_RATE}
+
+Repayment Tenure : {TENURE}
+
+Expected EMI : {EMI}

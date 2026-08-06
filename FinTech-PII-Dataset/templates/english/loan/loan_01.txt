@@ -1,0 +1,33 @@
+PERSONAL LOAN APPLICATION FORM
+
+Application ID : {APPLICATION_ID}
+
+Customer ID : {CUSTOMER_ID}
+
+Applicant Name : {PERSON}
+
+Gender : {GENDER}
+
+Date of Birth : {DATE}
+
+Phone Number : {PHONE}
+
+Email Address : {EMAIL}
+
+PAN Number : {PAN}
+
+Aadhaar Number : {AADHAAR}
+
+Employer : {EMPLOYER}
+
+Designation : {DESIGNATION}
+
+Monthly Salary : {SALARY}
+
+Requested Loan Amount : {LOAN_AMOUNT}
+
+Preferred Tenure : {TENURE}
+
+Interest Rate : {INTEREST_RATE}
+
+Monthly EMI : {EMI}

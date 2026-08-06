@@ -1,0 +1,15 @@
+INSURANCE POLICY
+
+Policy Holder : {PERSON}
+
+Phone : {PHONE}
+
+Email : {EMAIL}
+
+PAN : {PAN}
+
+Policy Number : {APPLICATION_ID}
+
+Premium Amount : {AMOUNT}
+
+Policy Start Date : {DATE}

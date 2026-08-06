@@ -1,0 +1,13 @@
+UPI TRANSACTION
+
+Customer : {PERSON}
+
+UPI ID : {UPI}
+
+Linked Account : {BANK_ACCOUNT}
+
+Transaction Date : {DATE}
+
+Amount : {AMOUNT}
+
+Remaining Balance : {AMOUNT}

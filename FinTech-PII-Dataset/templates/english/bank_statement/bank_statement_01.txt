@@ -1,0 +1,13 @@
+ACCOUNT STATEMENT
+
+Customer Name : {PERSON}
+
+Account Number : {BANK_ACCOUNT}
+
+IFSC Code : {IFSC}
+
+Statement Date : {DATE}
+
+Transaction Amount : {AMOUNT}
+
+Available Balance : {AMOUNT}

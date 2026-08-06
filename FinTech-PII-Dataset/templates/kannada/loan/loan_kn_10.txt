@@ -1,0 +1,33 @@
+ಸಾಲ ಗ್ರಾಹಕರ ವಿವರ
+
+ಗ್ರಾಹಕರ ಹೆಸರು : {PERSON}
+
+ಗ್ರಾಹಕ ಐಡಿ : {CUSTOMER_ID}
+
+ಮೊಬೈಲ್ : {PHONE}
+
+ಇ-ಮೇಲ್ : {EMAIL}
+
+ಪ್ಯಾನ್ : {PAN}
+
+ಆಧಾರ್ : {AADHAAR}
+
+ಸಾಲ ಖಾತೆ : {LOAN_ACCOUNT}
+
+ಸಾಲದ ಮೊತ್ತ : {LOAN_AMOUNT}
+
+ಇಎಂಐ : {EMI}
+
+ಬಡ್ಡಿದರ : {INTEREST_RATE}
+
+ಅವಧಿ : {TENURE}
+
+ಉದ್ಯೋಗದಾತ : {EMPLOYER}
+
+ಹುದ್ದೆ : {DESIGNATION}
+
+ಮಾಸಿಕ ವೇತನ : {SALARY}
+
+ಬ್ಯಾಂಕ್ ಖಾತೆ : {BANK_ACCOUNT}
+
+ಐಎಫ್‌ಎಸ್‌ಸಿ : {IFSC}

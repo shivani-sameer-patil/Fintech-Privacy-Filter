@@ -1,0 +1,1 @@
+Payment of {AMOUNT} received against your Credit Card ending XXXX1234. Thank you for banking with us.

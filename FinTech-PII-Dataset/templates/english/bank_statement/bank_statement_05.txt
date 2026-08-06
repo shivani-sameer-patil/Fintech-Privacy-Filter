@@ -1,0 +1,13 @@
+MONTHLY BANK STATEMENT
+
+Account Holder : {PERSON}
+
+Account Number : {BANK_ACCOUNT}
+
+Email : {EMAIL}
+
+Statement Date : {DATE}
+
+Deposit : {AMOUNT}
+
+Balance : {AMOUNT}

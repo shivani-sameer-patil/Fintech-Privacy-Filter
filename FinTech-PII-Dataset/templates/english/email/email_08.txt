@@ -1,0 +1,13 @@
+Subject: Welcome to Our Bank
+
+Dear {PERSON},
+
+Welcome!
+
+Your account {BANK_ACCOUNT} has been successfully activated.
+
+IFSC Code: {IFSC}
+
+UPI ID: {UPI}
+
+Thank you for choosing us.

@@ -1,0 +1,11 @@
+HEALTH INSURANCE
+
+Insured Person : {PERSON}
+
+Policy ID : {APPLICATION_ID}
+
+Coverage Amount : {AMOUNT}
+
+Policy Holder PAN : {PAN}
+
+Date of Issue : {DATE}

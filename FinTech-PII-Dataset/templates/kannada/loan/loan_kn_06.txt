@@ -1,0 +1,21 @@
+ಸಾಲ ಅರ್ಜಿ ಸಾರಾಂಶ
+
+ಅರ್ಜಿಯ ಸಂಖ್ಯೆ : {APPLICATION_ID}
+
+ಗ್ರಾಹಕ ಐಡಿ : {CUSTOMER_ID}
+
+ಹೆಸರು : {PERSON}
+
+ಮೊಬೈಲ್ : {PHONE}
+
+ಇ-ಮೇಲ್ : {EMAIL}
+
+ಉದ್ಯೋಗದಾತ : {EMPLOYER}
+
+ಹುದ್ದೆ : {DESIGNATION}
+
+ವೇತನ : {SALARY}
+
+ಸಾಲದ ಮೊತ್ತ : {LOAN_AMOUNT}
+
+ಸ್ಥಿತಿ : ಪ್ರಕ್ರಿಯೆಯಲ್ಲಿ
